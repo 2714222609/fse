@@ -2,6 +2,9 @@ package com.edu.hzau.ic.fe.service;
 
 import com.edu.hzau.ic.fe.entity.RDBMSSource;
 import com.edu.hzau.ic.fe.entity.Source;
+import com.edu.hzau.ic.fe.entity.SourceRepository;
+import com.edu.hzau.ic.fe.mapper.SqlQuery;
+import com.edu.hzau.ic.fe.utils.Dlgpz;
 import fr.lirmm.graphik.graal.api.core.*;
 import fr.lirmm.graphik.graal.core.DefaultUnionOfConjunctiveQueries;
 import fr.lirmm.graphik.graal.core.ruleset.DefaultOntology;
@@ -11,7 +14,6 @@ import fr.lirmm.graphik.util.Prefix;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import net.sf.json.JSONArray;
-import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -19,22 +21,10 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * @Description
  * @Author yue
- * @Date 2022/7/16 22:01
  */
 @Service
 public class FDAFunctions {
-    @Test
-    public void test() {
-        JSONArray results = query("?(Disorder,Alteration_Microbio,Microbiota,Alteration_Gene,Gene):-relationship:has_abundance_change_results_by_disorder(Microbiota,Index,<colorectal_carcinoma>)," +
-                "attribute:Disorder(X,Disorder)," +
-                "attribute:disorder_microbiota_host_type(Index,<human>)," +
-                "attribute:microbiota_alteration_caused_by_disorder(Index,Alteration_Microbio)," +
-                "relationship:has_expression_change_results_by_microbiota(Gene,Index1,Microbiota)," +
-                "attribute:gene_expression_alteration_caused_by_microbiota(Index1,Alteration_Gene).");
-        System.out.println(results);
-    }
     public JSONArray query(String queryStr) {
         SourceRepository repo = SourceRepository.defaultInstance("FDARepo");
         try {
