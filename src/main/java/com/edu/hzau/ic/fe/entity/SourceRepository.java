@@ -1,7 +1,5 @@
-package com.edu.hzau.ic.fe.service;
+package com.edu.hzau.ic.fe.entity;
 
-import com.edu.hzau.ic.fe.entity.RDBMSSource;
-import com.edu.hzau.ic.fe.entity.Source;
 import fr.lirmm.graphik.graal.store.rdbms.driver.AbstractRdbmsDriver;
 import fr.lirmm.graphik.graal.store.rdbms.driver.MysqlDriver;
 

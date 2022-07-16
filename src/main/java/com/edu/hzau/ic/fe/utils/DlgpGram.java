@@ -1,4 +1,4 @@
-package com.edu.hzau.ic.fe.service;
+package com.edu.hzau.ic.fe.utils;
 
 /*
  * Copyright (C) Inria Sophia Antipolis - Méditerranée / LIRMM

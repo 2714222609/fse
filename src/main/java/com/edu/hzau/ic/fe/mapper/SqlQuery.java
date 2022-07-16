@@ -1,4 +1,4 @@
-package com.edu.hzau.ic.fe.service;
+package com.edu.hzau.ic.fe.mapper;
 
 import net.sf.json.JSONArray;
 import org.json.simple.JSONObject;
