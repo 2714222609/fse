@@ -1,9 +1,9 @@
 package com.edu.hzau.ic.fe.entity;
 
+import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.json.simple.JSONObject;
 
 @Data
 @AllArgsConstructor

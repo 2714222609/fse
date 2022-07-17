@@ -1,7 +1,7 @@
 package com.edu.hzau.ic.fe.entity;
 
+import com.alibaba.fastjson2.JSONObject;
 import fr.lirmm.graphik.graal.store.rdbms.driver.AbstractRdbmsDriver;
-import org.json.simple.JSONObject;
 
 public class RDBMSSource extends Source {
 

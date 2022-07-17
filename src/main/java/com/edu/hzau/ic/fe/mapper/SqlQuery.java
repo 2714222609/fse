@@ -1,8 +1,8 @@
 package com.edu.hzau.ic.fe.mapper;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.sql.*;
 

@@ -1,5 +1,6 @@
 package com.edu.hzau.ic.fe.service;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.edu.hzau.ic.fe.entity.RDBMSSource;
 import com.edu.hzau.ic.fe.entity.Source;
 import com.edu.hzau.ic.fe.entity.SourceRepository;
@@ -14,7 +15,6 @@ import fr.lirmm.graphik.util.Prefix;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -48,7 +48,9 @@ public class FDAFunctions {
             String sqlquery = SqlTranslation.translate(datalog);
             log.info("sql ---> " + sqlquery);
             it.close();
-            return SqlQuery.excute(sqlquery);
+
+            JSONArray jsonArray = SqlQuery.excute(sqlquery);
+            return jsonArray;
         } catch (Exception e) {
             e.printStackTrace();
         }
