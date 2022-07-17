@@ -1,16 +1,16 @@
 package com.edu.hzau.ic.fe.mapper;
 
-import net.sf.json.JSONArray;
-import org.json.simple.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 
 ;
 
+@Slf4j
 public class SqlQuery {
     public static JSONArray excute(String sql) throws ClassNotFoundException, SQLException {
-        //加载驱动
-        Class.forName("com.mysql.jdbc.Driver");
         //获取连接Connection对象
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8", "root", "111111");
         //得到执行SQL语句的Statement对象
@@ -19,11 +19,11 @@ public class SqlQuery {
         ResultSet rs = stmt.executeQuery(sql);
         //对结果进行处理，这里是打印
         JSONArray jsonArray=extractJSONArray(rs);
-
         //关闭连接
         rs.close();
         stmt.close();
         conn.close();
+        log.info("sql execute success, return --> " + jsonArray);
         return jsonArray;
     }
 

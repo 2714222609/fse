@@ -1,5 +1,6 @@
 package com.edu.hzau.ic.fe.service;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.edu.hzau.ic.fe.entity.RDBMSSource;
 import com.edu.hzau.ic.fe.entity.Source;
 import com.edu.hzau.ic.fe.entity.SourceRepository;
@@ -13,7 +14,7 @@ import fr.lirmm.graphik.graal.backward_chaining.pure.PureRewriter;
 import fr.lirmm.graphik.util.Prefix;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
-import net.sf.json.JSONArray;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -24,41 +25,32 @@ import java.util.*;
  * @Author yue
  */
 @Service
+@Slf4j
 public class FDAFunctions {
     public JSONArray query(String queryStr) {
         SourceRepository repo = SourceRepository.defaultInstance("FDARepo");
         try {
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
-            Dlgpz writer = createDefaultWriter();
             ConjunctiveQuery query = buildQuery(queryStr);
-
-            writer.write("\n= query =\n");
-            writer.write(query);
+            log.info("ConjunctiveQuery ---> " + query);
 
             PureRewriter rewriter = new PureRewriter();
             CloseableIteratorWithoutException<ConjunctiveQuery> it = rewriter.execute(query, onto);
             UnionOfConjunctiveQueries ucq = new DefaultUnionOfConjunctiveQueries(query.getAnswerVariables(), it);
+            log.info("UnionOfConjunctiveQueries ---> " + ucq);
 
-            writer.write("\n= Rewritings =\n");
-            writer.write(ucq);
-
-            writer.write("\n= optimised rewritings =\n");
             Collection<ConjunctiveQuery> optimisedQueries = UCQOptimisation(ucq); // 优化：根据特定存储的模式优化（optimise）连接查询的并集
-            writer.write(optimisedQueries);
+            log.info("OptimisedQueries ---> " + optimisedQueries);
 
-            writer.write("\n= SqlQuery =\n");
             String datalog= Dlgpz.writeToString(optimisedQueries);//输出查询重写后的语句
+            log.info("Datalog after rewriting ---> " + datalog);
+
             String sqlquery = SqlTranslation.translate(datalog);
-            writer.write(sqlquery);
-
-            writer.write("\n");
-            writer.write("\n= SqlAnswer =\n");
-            writer.write(SqlQuery.excute(sqlquery));
-
-            // Close all resources
+            log.info("sql ---> " + sqlquery);
             it.close();
-            writer.close();  //调用的是OutputStreamWriter的close方法
-            return SqlQuery.excute(sqlquery);
+
+            JSONArray jsonArray = SqlQuery.excute(sqlquery);
+            return jsonArray;
         } catch (Exception e) {
             e.printStackTrace();
         }
