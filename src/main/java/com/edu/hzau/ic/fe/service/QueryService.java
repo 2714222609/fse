@@ -19,7 +19,7 @@ public class QueryService {
     @Autowired
     DateUtils dateUtil;
     @Autowired
-    private RedisService redisService;
+    RedisService redisService;
 
     public JSONArray query(@RequestBody JSONObject jsonObject) {
         // response time

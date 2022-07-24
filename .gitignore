@@ -208,3 +208,5 @@ build
 hs_err_pid*
 
 sql/
+
+script/
