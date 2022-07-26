@@ -64,22 +64,16 @@ attribute:disorder_microbiota_host_type(X,Host_Type):- :gutmdisorder.disorder_gu
 attribute:microbiota_alteration_caused_by_disorder(X,Alteration_Microbio):- :gutmdisorder.disorder_gut_microbiota_change_results(X,X1,Alteration_Microbio,X3,X4,X5).
 attribute:gene_expression_alteration_caused_by_microbiota(X,Alteration_Gene):- :gutmgene.gut_microbiota_gene_change_results(X,X1,Alteration_Gene,X3,X4,X5,X6,X7,X8).
 relationship:has_expression_change_results_by_microbiota(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
-attribute:kegg(X,Kegg_pathway):- :all_data.kegg(X,Kegg_pathway,X1,X2).
+attribute:kegg2(X,Y):- :all_data.kegg(X,Y,X1,X2).
 
 relationship:has_abundance_change_results_by_foodQ3(X,Y,Z):- :relationship.has_abundance_change_results_by_food(X,Y,Z).
 attribute:microbiota_alteration_caused_by_foodQ3(X,Y):- :gutmdisorder.food_gut_microbiota_change_results(X,X1,Y,X3,X4).
 attribute:food_microbiota_host_typeQ3(X,Y):- :gutmdisorder.food_gut_microbiota_change_results(X,Y,X2,X3,X4).
 relationship:generatesQ3(X,Y,Z):- :relationship.generates(X,Y,Z).
 
-relationship:has_abundance_change_results_by_disorderQ4(X,Y,Z):- :relationship.has_abundance_change_results_by_disorder(X,Y,Z).
-attribute:microbiota_alteration_cuased_by_disorderQ4(X,Y):- :gutmdisorder.disorder_gut_microbiota_change_results(X,X1,Y,X3,X4).
-relationship:has_expression_change_results_by_microbiotaQ4(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
-attribute:kegg(X,Kegg_network):- :all_data.kegg(X,X1,Kegg_network,X2).
-
-relationship:has_abundance_change_results_by_drugQ5(X,Y,Z):- :relationship.has_abundance_change_results_by_drug(X,Y,Z).
-relationship:has_expression_change_results_by_microbiotaQ5(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
-attribute:microbiota_gene_host_typeQ5(X,Y):- :gutmgene.gut_microbiota_gene_change_results(X,Y,X2,X3,X4,X5,X6).
-
+relationship:has_expression_change_results_by_microbiota4(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
+attribute:gut_microbiota_gene_change_results4(X,Y,Z):- :gutmgene.gut_microbiota_gene_change_results(X,Y,Z,X1,X2,X3,X4,X5).
+attribute:gene_kegg_characters4(X,Y):- :kegg.gene_kegg_characters(X,Y,X1,X2).
 
 relationship:changes_the_abundance_of_by_drug5(X,Y):- :relationship.changes_the_abundance_of_by_drug(X,Y,X1).
 relationship:changes_the_expression_of_by_microbiota5(X,Y):- :relationship.changes_the_expression_of_by_microbiota(X,Y,X1).

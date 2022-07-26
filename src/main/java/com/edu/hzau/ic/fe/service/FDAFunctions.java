@@ -1,6 +1,7 @@
 package com.edu.hzau.ic.fe.service;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.edu.hzau.ic.fe.entity.RDBMSSource;
 import com.edu.hzau.ic.fe.entity.Source;
 import com.edu.hzau.ic.fe.entity.SourceRepository;
@@ -48,14 +49,17 @@ public class FDAFunctions {
             String sqlquery = SqlTranslation.translate(datalog);
             log.info("sql ---> " + sqlquery);
             it.close();
-
-            JSONArray jsonArray = SqlQuery.excute(sqlquery);
-            return jsonArray;
+            return SqlQuery.excute(sqlquery);
         } catch (Exception e) {
-            e.printStackTrace();
+            JSONArray resultJson = new JSONArray();
+            JSONObject responseInfo = new JSONObject();
+            responseInfo.put("err", "You have an error in your datalog syntax.");
+            resultJson.add(responseInfo);
+            log.error(e.getMessage());
+            return resultJson;
         }
-        return null;
     }
+
     public Ontology createRDBMSOntology(Set<Source> sourcePool) throws Exception {
         Set<RDBMSSource> rdbmsSourceSet = new HashSet<RDBMSSource>();
         for (Source source : sourcePool) {
@@ -125,7 +129,6 @@ public class FDAFunctions {
                 optimisedQueries.add(lastConjunctiveQuery);
             }
         }
-
         return optimisedQueries;
     }
 }

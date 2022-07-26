@@ -29,22 +29,24 @@ public class QueryService {
         // 查缓存
         String datalog = (String) jsonObject.get("datalog");
         JSONArray resultJson;
-        String key = String.valueOf(datalog.hashCode());
-        String resultString = redisService.getString(key);
-        if (resultString != null) {
-            resultJson = JSONArray.parseArray(resultString);
-        }else {
+//        String key = String.valueOf(datalog.hashCode());
+//        String resultString = redisService.getString(key);
+//        if (resultString != null) {
+//            resultJson = JSONArray.parseArray(resultString);
+//        }else {
             log.info("Query cache missed.");
             resultJson = fdaFunctions.query(datalog);
-            // 缓存到redis
-            resultString = resultJson.toString();
-            redisService.setString(key, resultString);
-        }
+//            // 缓存到redis
+//            resultString = resultJson.toString();
+//            redisService.setString(key, resultString);
+//        }
         endTime = dateUtil.getDate();
+        int responseCount = resultJson.toArray().length;
         double responseTime = (endTime - startTime) / 1000;
-        JSONObject responseTimeJson = new JSONObject();
-        responseTimeJson.put("response time", responseTime + "s");
-        resultJson.add(responseTimeJson);
+        JSONObject responseInfo = new JSONObject();
+        responseInfo.put("response count", responseCount);
+        responseInfo.put("response time", responseTime + "s");
+        resultJson.add(responseInfo);
         return resultJson;
     }
 }

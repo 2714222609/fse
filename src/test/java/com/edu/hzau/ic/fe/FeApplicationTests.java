@@ -41,7 +41,7 @@ class FeApplicationTests {
                 "attribute:microbiota_alteration_caused_by_disorder(Index,Alteration_microbio)," +
                 "relationship:has_expression_change_results_by_microbiota(Gene,Index1,Microbiota)," +
                 "attribute:gene_expression_alteration_caused_by_microbiota(Index1,Alteration_gene)," +
-                "attribute:kegg(Gene,Kegg_pathway).");
+                "attribute:kegg2(Gene,Kegg_pathway).");
     }
 
     @Test
@@ -55,12 +55,11 @@ class FeApplicationTests {
 
     @Test
     void testQ4(){
-        JSONArray result = fdaFunctions.query("?(Disorder,Microbiota,Alteration_microbiota,Gene,Kegg_network):-relationship:has_abundance_change_results_by_disorderQ4(<Salmonella_enterica>,disorder_microbiota_index,Disorder)," +
-                "relationship:has_abundance_change_results_by_disorderQ4(Microbiota,disorder_microbiota_index,Disorder)," +
-                "attribute:microbiota_alteration_cuased_by_disorderQ4(disorder_microbiota_index,<increase>)," +
-                "attribute:microbiota_alteration_cuased_by_disorderQ4(disorder_microbiota_index,Alteration_microbiota)," +
-                "relationship:has_expression_change_results_by_microbiotaQ4(Gene,microbiota_gene_index,Microbiota)," +
-                "attribute:kegg(Gene,Kegg_network).");
+        JSONArray result = fdaFunctions.query("?(Microbiota,Gene,Alteration,Kegg_pathway):-relationship:has_expression_change_results_by_microbiota4(Gene,Index,<Salmonella_enterica>)," +
+                "relationship:has_expression_change_results_by_microbiota4(Gene,Index,Microbiota)," +
+                "attribute:gut_microbiota_gene_change_results4(Index,<human>,<decrease>)," +
+                "attribute:gut_microbiota_gene_change_results4(Index,<human>,Alteration)," +
+                "attribute:gene_kegg_characters4(Index,Kegg_pathway).");
     }
 
     @Test
