@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 
-;
-
 @Slf4j
 public class SqlQuery {
     public static JSONArray excute(String sql) throws ClassNotFoundException, SQLException {
@@ -27,13 +25,6 @@ public class SqlQuery {
         return jsonArray;
     }
 
-    /**
-     * 通用取结果方案,返回JSONArray
-     *
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
     public static JSONArray extractJSONArray(ResultSet rs) throws SQLException {
         ResultSetMetaData md = rs.getMetaData();
         int num = md.getColumnCount();
