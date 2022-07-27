@@ -104,4 +104,31 @@ class FeApplicationTests {
                 "attribute:gene_expression_alteration_caused_by_microbiotaQ9(Microbiota_gene_index,Alteration_gene).");
     }
 
+    @Test
+    void testQ101() {
+        JSONArray result = fdaFunctions.query("?(Disorder,Microbiota,Alteration,Gene):-relationship:has_abundance_change_results_by_disorder101(Disorder,<Eubacterium>),\n" +
+                "relationship:has_abundance_change_results_by_disorder101(Disorder,Microbiota),\n" +
+                "attribute:disorder_microbiota_host_type101(<human>,<decrease>),\n" +
+                "attribute:disorder_microbiota_host_type101(<human>,Alteration),\n" +
+                "relationship:changes_the_expression_by_microbiota101(Microbiota,Gene).");
+    }
+
+    @Test
+    void testQ102() {
+        JSONArray result = fdaFunctions.query("?(Food,Microbiota,Alteration,Gene):-relationship:has_abundance_change_results_by_food101(Food,<Eubacterium>),\n" +
+                "relationship:has_abundance_change_results_by_food101(Food,Microbiota),\n" +
+                "attribute:food_microbiota_host_type101(<human>,<decrease>),\n" +
+                "attribute:food_microbiota_host_type101(<human>,Alteration),\n" +
+                "relationship:changes_the_expression_by_microbiota101(Microbiota,Gene).");
+    }
+
+    @Test
+    void testQ103() {
+        JSONArray result = fdaFunctions.query("?(Drug,Microbiota,Alteration,Gene):-relationship:has_abundance_change_results_by_drug101(Drug,<Eubacterium>),\n" +
+                "relationship:has_abundance_change_results_by_drug101(Drug,Microbiota),\n" +
+                "attribute:drug_microbiota_host_type101(<human>,<decrease>),\n" +
+                "attribute:drug_microbiota_host_type101(<human>,Alteration),\n" +
+                "relationship:changes_the_expression_by_microbiota101(Microbiota,Gene).");
+    }
+
 }

@@ -99,3 +99,15 @@ relationship:has_abundance_change_results_by_disorderQ9(X,Y,Z):- :relationship.h
 attribute:microbiota_alteration_caused_by_disorderQ9(X,Y):- :gutmdisorder.disorder_gut_microbiota_change_results(X,X1,Y,X3,X4).
 relationship:has_expression_change_results_by_microbiotaQ9(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
 attribute:gene_expression_alteration_caused_by_microbiotaQ9(X,Y):- :gutmgene.gut_microbiota_gene_change_results(X,X1,Y,X3,X4,X5,X6).
+
+relationship:has_abundance_change_results_by_disorder101(X,Y):- :relationship.change_the_abundance_of_by_disorder(X,Y,X1).
+attribute:disorder_microbiota_host_type101(X,Y):- :gutmdisorder.disorder_gut_microbiota_change_results(X1,X,Y,X2,X3).
+relationship:changes_the_expression_by_microbiota101(X,Y):-:relationship.changes_the_expression_of_by_microbiota(X,Y,X1).
+
+relationship:has_abundance_change_results_by_food101(X,Y):- :relationship.changes_the_abundance_of_by_food(X,Y,X1).
+attribute:food_microbiota_host_type101(X,Y):- :gutmdisorder.food_gut_microbiota_change_results(X1,X,Y,X2,X3).
+relationship:changes_the_expression_by_microbiota101(X,Y):-:relationship.changes_the_expression_of_by_microbiota(X,Y,X1).
+
+relationship:has_abundance_change_results_by_drug101(X,Y):- :relationship.changes_the_abundance_of_by_drug(X,Y,X1).
+attribute:drug_microbiota_host_type101(X,Y):- :gutmdisorder.drug_gut_microbiota_change_results(X1,X,Y,X2,X3).
+relationship:changes_the_expression_by_microbiota101(X,Y):-:relationship.changes_the_expression_of_by_microbiota(X,Y,X1).
