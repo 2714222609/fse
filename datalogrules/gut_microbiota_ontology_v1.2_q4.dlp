@@ -56,14 +56,11 @@ relationship:has_expression_change_results_by_microbiotaQ1(X,Y,Z):- :relationshi
 attribute:gene_expression_alteration_caused_by_microbiotaQ1(X,Y):- :gutmgene.gut_microbiota_gene_change_results(X,X1,Y,X3,X4,X5,X6,X7).
 relationship:changes_the_abundance_of_by_foodQ1(X,Y,Z):- :relationship.changes_the_abundance_of_by_food(X,Y,Z).
 
-
-
-relationship:has_abundance_change_results_by_disorder(X,Y,Z):- :relationship.has_abundance_change_results_by_disorder(X,Y,Z).
-attribute:Disorder(X,Disorder):- :relationship.has_abundance_change_results_by_disorder(X,X1,Disorder).
-attribute:disorder_microbiota_host_type(X,Host_Type):- :gutmdisorder.disorder_gut_microbiota_change_results(X,Host_Type,X2,X3,X4,X5).
-attribute:microbiota_alteration_caused_by_disorder(X,Alteration_Microbio):- :gutmdisorder.disorder_gut_microbiota_change_results(X,X1,Alteration_Microbio,X3,X4,X5).
-attribute:gene_expression_alteration_caused_by_microbiota(X,Alteration_Gene):- :gutmgene.gut_microbiota_gene_change_results(X,X1,Alteration_Gene,X3,X4,X5,X6,X7,X8).
-relationship:has_expression_change_results_by_microbiota(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
+relationship:has_abundance_change_results_by_disorder2(X,Y,Z):- :relationship.has_abundance_change_results_by_disorder(Y,Z,X).
+relationship:has_abundance_change_results_by_disorder2(X):- :relationship.has_abundance_change_results_by_disorder(X1,X2,X).
+attribute:disorder_gut_microbiota_change_results2(X,Y,Z):- :gutmdisorder.disorder_gut_microbiota_change_results(X,Y,Z,X1,X2).
+attribute:gut_microbiota_gene_change_results2(X,Y):- :gutmgene.gut_microbiota_gene_change_results(X,X1,Y,X3,X4,X5,X6,X7,X8).
+relationship:has_expression_change_results_by_microbiota2(X,Y,Z):- :relationship.has_expression_change_results_by_microbiota(X,Y,Z).
 attribute:kegg2(X,Y):- :all_data.kegg(X,Y,X1,X2).
 
 relationship:has_abundance_change_results_by_foodQ3(X,Y,Z):- :relationship.has_abundance_change_results_by_food(X,Y,Z).

@@ -35,12 +35,12 @@ class FeApplicationTests {
 
     @Test
     void testQ2(){
-        JSONArray result = fdaFunctions.query("?(Disorder,Alteration_microbio,Microbiota,Alteration_gene,Gene,Kegg_pathway):-relationship:has_abundance_change_results_by_disorder(Microbiota,Index,<colorectal_cancer>)," +
-                "attribute:Disorder(X,Disorder)," +
-                "attribute:disorder_microbiota_host_type(Index,<human>)," +
-                "attribute:microbiota_alteration_caused_by_disorder(Index,Alteration_microbio)," +
-                "relationship:has_expression_change_results_by_microbiota(Gene,Index1,Microbiota)," +
-                "attribute:gene_expression_alteration_caused_by_microbiota(Index1,Alteration_gene)," +
+        JSONArray result = fdaFunctions.query("?(Disorder,Alteration_microbiota,Microbiota,Alteration_gene,Gene,Kegg_pathway):-" +
+                "relationship:has_abundance_change_results_by_disorder2(Disorder,Microbiota,Index)," +
+                "relationship:has_abundance_change_results_by_disorder2(<colorectal_carcinoma>)," +
+                "attribute:disorder_gut_microbiota_change_results2(Index,<human>,Alteration_microbiota)," +
+                "relationship:has_expression_change_results_by_microbiota2(Gene,Index1,Microbiota)," +
+                "attribute:gut_microbiota_gene_change_results2(Index1,Alteration_gene)," +
                 "attribute:kegg2(Gene,Kegg_pathway).");
     }
 
