@@ -40,7 +40,7 @@ public class QueryService {
 //            }else {
                 log.info("Query cache missed.");
                 resultJson = fdaFunctions.query((String) datalog);
-//                // 缓存到redis
+                // 缓存到redis
 //                resultString = resultJson.toString();
 //                redisService.setString(key, resultString);
 //            }

@@ -66,10 +66,11 @@ public class SqlTranslation {
 
 //      -----------开始from的拼接-------
             List<String> newTable = remove(Table);
-            for(int i=0;i<newTable.size()-1;i++){
-                select.append(newTable.get(i)).append(",");
+            Object[] newTableStrs = new HashSet<>(newTable).toArray();
+            for(int i=0;i<newTableStrs.length-1;i++){
+                select.append(newTableStrs[i]).append(",");
             }
-            select.append(Table.get(newTable.size() - 1)).append(" where ");
+            select.append(newTableStrs[newTableStrs.length - 1]).append(" where ");
 //      -----------完成from的拼接-------
 
 
