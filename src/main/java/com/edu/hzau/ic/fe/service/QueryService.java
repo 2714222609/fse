@@ -32,18 +32,18 @@ public class QueryService {
         // 处理每一条datalog
         for (Object datalog : datalogs) {
             JSONArray resultJson = null;
-//            // 缓存
-//            String key = String.valueOf(datalog.hashCode());
-//            String resultString = redisService.getString(key);
-//            if (resultString != null) {
-//                resultJson = JSONArray.parseArray(resultString);
-//            }else {
+            // 缓存
+            String key = String.valueOf(datalog.hashCode());
+            String resultString = redisService.getString(key);
+            if (resultString != null) {
+                resultJson = JSONArray.parseArray(resultString);
+            }else {
                 log.info("Query cache missed.");
                 resultJson = fdaFunctions.query((String) datalog);
                 // 缓存到redis
-//                resultString = resultJson.toString();
-//                redisService.setString(key, resultString);
-//            }
+                resultString = resultJson.toString();
+                redisService.setString(key, resultString);
+            }
             responseCount += resultJson.toArray().length;
             resultAll.addAll(resultJson);
         }
