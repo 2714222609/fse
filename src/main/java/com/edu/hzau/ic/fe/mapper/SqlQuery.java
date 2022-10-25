@@ -10,7 +10,7 @@ import java.sql.*;
 public class SqlQuery {
     public static JSONArray excute(String sql) throws ClassNotFoundException, SQLException {
         //获取连接Connection对象
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8", "root", "111111");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8", "root", "yue043274");
         //得到执行SQL语句的Statement对象
         Statement stmt = conn.createStatement();
         //执行SQL语句，这里是执行查询语句，得到一个虚拟表的结果对象

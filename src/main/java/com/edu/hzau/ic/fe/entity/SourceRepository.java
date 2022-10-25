@@ -64,13 +64,13 @@ public class SourceRepository {
         String root = "./datalogrules/";
         Set<Source> sourcePool = new HashSet<Source>();
         try{
-            AbstractRdbmsDriver keggDriver = new MysqlDriver("jdbc:mysql://localhost:3306/kegg?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver keggDriver = new MysqlDriver("jdbc:mysql://localhost:3306/kegg?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
             RDBMSSource kegg = new RDBMSSource("kegg", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", keggDriver);
-            AbstractRdbmsDriver gutmgeneDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmgene?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver gutmgeneDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmgene?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
             RDBMSSource gutmgene = new RDBMSSource("gutmgene", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", gutmgeneDriver);
-            AbstractRdbmsDriver relDriver = new MysqlDriver("jdbc:mysql://localhost:3306/relationship?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver relDriver = new MysqlDriver("jdbc:mysql://localhost:3306/relationship?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
             RDBMSSource rel = new RDBMSSource("relationship", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", relDriver);
-            AbstractRdbmsDriver gutmdisorderDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmdisorder?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver gutmdisorderDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmdisorder?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
             RDBMSSource gutmdisorder = new RDBMSSource("gutmdisorder", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", gutmdisorderDriver);
             sourcePool.add(gutmdisorder);
             sourcePool.add(gutmgene);

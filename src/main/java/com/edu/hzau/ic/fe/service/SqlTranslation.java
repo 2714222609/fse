@@ -93,7 +93,7 @@ public class SqlTranslation {
 
         public static LinkedHashMap<Integer, String> findsql(String TableName) throws SQLException, ClassNotFoundException {
             //2、用户信息和url
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8", "root", "111111");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8", "root", "yue043274");
 
             //4、执行sql的对象
             Statement statement = conn.createStatement();
