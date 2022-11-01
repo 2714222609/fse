@@ -1,4 +1,4 @@
-package com.edu.hzau.ic.fe.entity;
+package com.edu.hzau.ic.fe.entity.datalog;
 
 
 import com.edu.hzau.ic.fe.entity.datalog.DatalogAttribute;

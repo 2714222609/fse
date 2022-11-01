@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class HmdbUtils {
+public class HMDBUtils {
 
     @Resource
     private JdbcTemplate jdbcTemplate;

@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class KeggUtils {
+public class KEGGUtils {
     private static final String KEGG_URL = "https://rest.kegg.jp/conv/genes/ncbi-geneid:";
 
     /**

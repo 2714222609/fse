@@ -1,4 +1,4 @@
-package com.edu.hzau.ic.fe.entity;
+package com.edu.hzau.ic.fe.entity.datasource;
 
 import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;

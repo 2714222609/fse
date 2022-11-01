@@ -1,12 +1,9 @@
-package com.edu.hzau.ic.fe.entity;
+package com.edu.hzau.ic.fe.entity.datasource;
 
 import com.edu.hzau.ic.fe.utils.Constants;
 import fr.lirmm.graphik.graal.store.rdbms.driver.AbstractRdbmsDriver;
 import fr.lirmm.graphik.graal.store.rdbms.driver.MysqlDriver;
 import lombok.Data;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.HashSet;

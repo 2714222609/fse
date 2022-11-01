@@ -2,9 +2,9 @@ package com.edu.hzau.ic.fe.service;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.edu.hzau.ic.fe.entity.RDBMSSource;
-import com.edu.hzau.ic.fe.entity.Source;
-import com.edu.hzau.ic.fe.entity.SourceRepo;
+import com.edu.hzau.ic.fe.entity.datasource.RDBMSSource;
+import com.edu.hzau.ic.fe.entity.datasource.Source;
+import com.edu.hzau.ic.fe.entity.datasource.SourceRepo;
 import com.edu.hzau.ic.fe.mapper.SqlQuery;
 import com.edu.hzau.ic.fe.utils.Dlgpz;
 import fr.lirmm.graphik.graal.api.core.ConjunctiveQuery;
