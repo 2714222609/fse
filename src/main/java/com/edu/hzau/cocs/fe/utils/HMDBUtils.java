@@ -1,6 +1,6 @@
 package com.edu.hzau.cocs.fe.utils;
 
-import com.edu.hzau.cocs.fe.entity.HMDBEntity;
+import com.edu.hzau.cocs.fe.pojo.HMDBEntity;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.extern.slf4j.Slf4j;

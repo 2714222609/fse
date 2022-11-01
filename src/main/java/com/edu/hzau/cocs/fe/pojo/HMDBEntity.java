@@ -1,4 +1,4 @@
-package com.edu.hzau.cocs.fe.entity;
+package com.edu.hzau.cocs.fe.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

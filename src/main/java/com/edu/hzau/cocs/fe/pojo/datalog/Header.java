@@ -1,4 +1,4 @@
-package com.edu.hzau.cocs.fe.entity.datalog;
+package com.edu.hzau.cocs.fe.pojo.datalog;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,18 +13,17 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Relationship {
-    private String relationship;
+public class Header {
     private List<String> fields;
-    public String getRelationshipString() {
-        StringBuilder sb = new StringBuilder(String.format("relationship:%s(", relationship));
+    public String getHeaderString() {
+        StringBuilder sb = new StringBuilder("?(");
         for (int i = 0; i < fields.size(); i++) {
             sb.append(fields.get(i));
             if (i != fields.size() - 1) {
                 sb.append(",");
             }
         }
-        sb.append("),");
+        sb.append("):-");
         return sb.toString();
     }
 }

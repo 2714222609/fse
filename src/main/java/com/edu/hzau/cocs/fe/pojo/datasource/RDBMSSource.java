@@ -1,4 +1,4 @@
-package com.edu.hzau.cocs.fe.entity.datasource;
+package com.edu.hzau.cocs.fe.pojo.datasource;
 
 import fr.lirmm.graphik.graal.store.rdbms.driver.AbstractRdbmsDriver;
 import lombok.Data;

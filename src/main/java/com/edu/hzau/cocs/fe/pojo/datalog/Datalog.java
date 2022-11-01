@@ -1,4 +1,4 @@
-package com.edu.hzau.cocs.fe.entity.datalog;
+package com.edu.hzau.cocs.fe.pojo.datalog;
 
 
 import lombok.AllArgsConstructor;
@@ -60,10 +60,10 @@ public class Datalog {
     @Override
     public String toString() {
         return "Datalog{" +
-                "\ndatalogHeader = " + header +
-                ", \ndatalogClazz = " + clazzes +
-                ", \ndatalogRelationship = " + relationship +
-                ", \ndatalogAttribute = " + attribute +
+                "\nHeader = " + header +
+                ", \nClass = " + clazzes +
+                ", \nRelationship = " + relationship +
+                ", \nAttribute = " + attribute +
                 "\n}";
     }
 

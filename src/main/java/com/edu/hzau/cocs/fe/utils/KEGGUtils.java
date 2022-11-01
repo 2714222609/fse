@@ -1,6 +1,6 @@
 package com.edu.hzau.cocs.fe.utils;
 
-import com.edu.hzau.cocs.fe.entity.KEGGEntity;
+import com.edu.hzau.cocs.fe.pojo.KEGGEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

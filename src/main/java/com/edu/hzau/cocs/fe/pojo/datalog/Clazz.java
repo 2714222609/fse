@@ -1,4 +1,4 @@
-package com.edu.hzau.cocs.fe.entity.datalog;
+package com.edu.hzau.cocs.fe.pojo.datalog;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +13,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Attribute {
-    private String attribute;
+public class Clazz {
+    private String clazz;
     private List<String> fields;
-    public String getAttributeString() {
-        StringBuilder sb = new StringBuilder(String.format("attribute:%s(", attribute));
+    public String getClazzString() {
+        StringBuilder sb = new StringBuilder(String.format("class:%s(", clazz));
         for (int i = 0; i < fields.size(); i++) {
             sb.append(fields.get(i));
             if (i != fields.size() - 1) {
@@ -27,5 +27,4 @@ public class Attribute {
         sb.append("),");
         return sb.toString();
     }
-
 }

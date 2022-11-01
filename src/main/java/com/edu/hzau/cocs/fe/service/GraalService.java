@@ -2,10 +2,10 @@ package com.edu.hzau.cocs.fe.service;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.edu.hzau.cocs.fe.entity.datasource.RDBMSSource;
-import com.edu.hzau.cocs.fe.entity.datasource.Source;
-import com.edu.hzau.cocs.fe.entity.datasource.SourceRepo;
-import com.edu.hzau.cocs.fe.mapper.SqlQuery;
+import com.edu.hzau.cocs.fe.mapper.ResMapper;
+import com.edu.hzau.cocs.fe.pojo.datasource.RDBMSSource;
+import com.edu.hzau.cocs.fe.pojo.datasource.Source;
+import com.edu.hzau.cocs.fe.pojo.datasource.SourceRepo;
 import com.edu.hzau.cocs.fe.utils.Dlgpz;
 import fr.lirmm.graphik.graal.api.core.ConjunctiveQuery;
 import fr.lirmm.graphik.graal.api.core.Ontology;
@@ -18,6 +18,7 @@ import fr.lirmm.graphik.graal.io.dlp.DlgpParser;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -31,11 +32,14 @@ import java.util.*;
 @Service
 public class GraalService {
 
+    @Autowired
+    ResMapper resMapper;
+
     public JSONArray query(String datalog) {
         // swine
-        SourceRepo repo = SourceRepo.getSwineSourceRepo();
+//        SourceRepo repo = SourceRepo.getSwineSourceRepo();
         // bio
-//        SourceRepo repo = SourceRepo.getBioSourceRepo();
+        SourceRepo repo = SourceRepo.getBioSourceRepo();
         try {
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);
@@ -55,7 +59,10 @@ public class GraalService {
             String sqlquery = SqlTranslation.translate(datalogRewrite);
             log.info("sql ---> " + sqlquery);
             it.close();
-            return SqlQuery.excute(sqlquery);
+
+            JSONArray jsonArray = resMapper.queryForJson(sqlquery);
+            log.info("jsonArray ---> " + jsonArray);
+            return jsonArray;
 
         } catch (Exception e) {
             JSONArray resultJson = new JSONArray();
