@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Service
 public class QueryService {
     @Autowired
-    FDAFunctions fdaFunctions;
+    GraalService graalService;
     @Autowired
     DateUtils dateUtil;
     @Autowired
@@ -39,7 +39,7 @@ public class QueryService {
                 resultJson = JSONArray.parseArray(resultString);
             }else {
                 log.info("Query cache missed.");
-                resultJson = fdaFunctions.query((String) datalog);
+                resultJson = graalService.query((String) datalog);
                 // 缓存到redis
                 resultString = resultJson.toString();
                 redisService.setString(key, resultString);
