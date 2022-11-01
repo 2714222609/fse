@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.edu.hzau.ic.fe.entity.RDBMSSource;
 import com.edu.hzau.ic.fe.entity.Source;
+import com.edu.hzau.ic.fe.entity.SourceRepo;
 import com.edu.hzau.ic.fe.entity.SourceRepository;
 import com.edu.hzau.ic.fe.mapper.SqlQuery;
 import com.edu.hzau.ic.fe.utils.Dlgpz;
@@ -16,6 +17,7 @@ import fr.lirmm.graphik.util.Prefix;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -28,8 +30,12 @@ import java.util.*;
 @Service
 @Slf4j
 public class FDAFunctions {
+
+
     public JSONArray query(String queryStr) {
-        SourceRepository repo = SourceRepository.defaultInstance("FDARepo");
+//        SourceRepository repo = SourceRepository.defaultInstance("FDARepo");
+//        SourceRepo repo = SourceRepo.getSwineSourceRepo();
+        SourceRepo repo = SourceRepo.getBioSourceRepo();
         try {
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(queryStr);

@@ -29,7 +29,8 @@ public class SourceRepository {
     public SourceRepository(String repoName, boolean createDefaultPool){
         this.repoName = repoName;
         if (createDefaultPool){
-            this.sourcePool = createDefaultSourcePool(); // 跟vms、cms数据库有关
+//            this.sourcePool = createDefaultSourcePool(); // 跟vms、cms数据库有关
+            this.sourcePool = createSwineSourcePool();
         }
     }
 
@@ -64,18 +65,37 @@ public class SourceRepository {
         String root = "./datalogrules/";
         Set<Source> sourcePool = new HashSet<Source>();
         try{
-            AbstractRdbmsDriver keggDriver = new MysqlDriver("jdbc:mysql://localhost:3306/kegg?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver keggDriver = new MysqlDriver("jdbc:mysql://localhost:3306/kegg?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
             RDBMSSource kegg = new RDBMSSource("kegg", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", keggDriver);
-            AbstractRdbmsDriver gutmgeneDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmgene?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver gutmgeneDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmgene?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
             RDBMSSource gutmgene = new RDBMSSource("gutmgene", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", gutmgeneDriver);
-            AbstractRdbmsDriver relDriver = new MysqlDriver("jdbc:mysql://localhost:3306/relationship?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver relDriver = new MysqlDriver("jdbc:mysql://localhost:3306/relationship?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
             RDBMSSource rel = new RDBMSSource("relationship", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", relDriver);
-            AbstractRdbmsDriver gutmdisorderDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmdisorder?user=root&password=yue043274&useUnicode=true&characterEncoding=utf8");
+            AbstractRdbmsDriver gutmdisorderDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gutmdisorder?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
             RDBMSSource gutmdisorder = new RDBMSSource("gutmdisorder", "mysql", root+"gut_microbiota_ontology_v1.2_q4.dlp", gutmdisorderDriver);
             sourcePool.add(gutmdisorder);
             sourcePool.add(gutmgene);
             sourcePool.add(kegg);
             sourcePool.add(rel);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return sourcePool;
+    }
+
+    public Set<Source> createSwineSourcePool(){
+        String root = "./datalogrules/";
+        Set<Source> sourcePool = new HashSet<>();
+        try{
+            AbstractRdbmsDriver fsmmDriver = new MysqlDriver("jdbc:mysql://localhost:3306/fsmm?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            RDBMSSource fsmm = new RDBMSSource("fsmm", "mysql", root+"swine_microbiota_ontology.dlp", fsmmDriver);
+            AbstractRdbmsDriver geneInfoDriver = new MysqlDriver("jdbc:mysql://localhost:3306/gene_info?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            RDBMSSource geneInfo = new RDBMSSource("gene_info", "mysql", root+"swine_microbiota_ontology.dlp", geneInfoDriver);
+            AbstractRdbmsDriver relationshipEntityDriver = new MysqlDriver("jdbc:mysql://localhost:3306/relationship_entity?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+            RDBMSSource relationshipEntity = new RDBMSSource("relationship_entity", "mysql", root+"swine_microbiota_ontology.dlp", relationshipEntityDriver);
+            sourcePool.add(fsmm);
+            sourcePool.add(geneInfo);
+            sourcePool.add(relationshipEntity);
         } catch(Exception e){
             e.printStackTrace();
         }

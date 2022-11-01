@@ -1,23 +1,19 @@
 package com.edu.hzau.ic.fe.utils;
 
-import com.edu.hzau.ic.fe.entity.HmdbEntity;
+import com.edu.hzau.ic.fe.entity.HMDBEntity;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,8 +35,8 @@ public class HmdbUtils {
     /**
      * 爬取pathway和kegg_url，封装为hmdbEntity
      */
-    public List<HmdbEntity> getHmdbEntity(List<String> hmdbIds) {
-        List<HmdbEntity> hmdbEntityList = new ArrayList<>();
+    public List<HMDBEntity> getHmdbEntity(List<String> hmdbIds) {
+        List<HMDBEntity> HMDBEntityList = new ArrayList<>();
         for (String hmdbId : hmdbIds) {
             Document document = null;
             try {
@@ -59,16 +55,16 @@ public class HmdbUtils {
                     Element td = tds.get(2);
                     if (td.getElementsByTag("span").isEmpty()) {
                         String imgSrc = td.getElementsByTag("img").attr("src");
-                        HmdbEntity hmdbEntity = new HmdbEntity(hmdbId, pathway, imgSrc);
+                        HMDBEntity hmdbEntity = new HMDBEntity(hmdbId, pathway, imgSrc);
                         log.info(String.valueOf(hmdbEntity));
-                        hmdbEntityList.add(hmdbEntity);
+                        HMDBEntityList.add(hmdbEntity);
                     }
                 }catch (IndexOutOfBoundsException e) {
                     log.warn("{} pathway is null", hmdbId);
                 }
             }
         }
-        return hmdbEntityList;
+        return HMDBEntityList;
     }
 
     /**

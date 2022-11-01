@@ -1,6 +1,6 @@
 package com.edu.hzau.ic.fe.utils;
 
-import com.edu.hzau.ic.fe.entity.KeggEntity;
+import com.edu.hzau.ic.fe.entity.KEGGEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -71,15 +71,15 @@ public class KeggUtils {
     /**
      * 根据keggId获取实体
      */
-    public List<KeggEntity> getKeggEntity(List<String> keggIds) throws RserveException, REXPMismatchException {
+    public List<KEGGEntity> getKeggEntity(List<String> keggIds) throws RserveException, REXPMismatchException {
         RConnection rc = new RConnection();
         REXP eval;
-        List<KeggEntity> entities = new ArrayList<>();
+        List<KEGGEntity> entities = new ArrayList<>();
         // 加载kegg库
         rc.eval("library(KEGGREST)");
         // 解析entry
         for (String keggId : keggIds) {
-            KeggEntity entry = new KeggEntity();
+            KEGGEntity entry = new KEGGEntity();
             String ncbiGeneId = keggId.replaceAll(".*[^\\d](?=(\\d+))","");
             entry.setNcbiGeneId(ncbiGeneId);
 
