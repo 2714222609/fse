@@ -37,9 +37,9 @@ public class GraalService {
 
     public JSONArray query(String datalog) {
         // swine
-//        SourceRepo repo = SourceRepo.getSwineSourceRepo();
+        SourceRepo repo = SourceRepo.getSwineSourceRepo();
         // bio
-        SourceRepo repo = SourceRepo.getBioSourceRepo();
+//        SourceRepo repo = SourceRepo.getBioSourceRepo();
         try {
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);

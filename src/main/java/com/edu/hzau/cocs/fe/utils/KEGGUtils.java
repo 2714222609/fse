@@ -1,6 +1,8 @@
 package com.edu.hzau.cocs.fe.utils;
 
+import com.edu.hzau.cocs.fe.pojo.Gene;
 import com.edu.hzau.cocs.fe.pojo.KEGGEntity;
+import com.edu.hzau.cocs.fe.pojo.datasource.KEGGPathwayMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -8,17 +10,29 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.junit.Test;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,8 +41,11 @@ import java.util.List;
 @Slf4j
 @Component
 public class KEGGUtils {
-    private static final String KEGG_URL = "https://rest.kegg.jp/conv/genes/ncbi-geneid:";
+    @Resource
+    private JdbcTemplate jdbcTemplate;
 
+    private static final String KEGG_URL = "https://rest.kegg.jp/conv/genes/ncbi-geneid:";
+    private static final String KEGG_PATHWAY_URL = "https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=";
     /**
      * 根据ncbi_gene_id获取keggId
      */
@@ -150,4 +167,68 @@ public class KEGGUtils {
         rc.close();
         return entities;
     }
+
+    /**
+     * 获取带有图片的gene pathway
+     */
+    public List<KEGGPathwayMap> getKeggPathwayMap(List<Gene> geneList) throws RserveException, IOException, REXPMismatchException {
+        List<KEGGPathwayMap> res = new ArrayList<>();
+        for (Gene gene : geneList) {
+            Document document = null;
+            try {
+                 document = Jsoup.parse(new URL(KEGG_PATHWAY_URL + gene.getGeneSymbol()), 5000);
+            } catch (IOException e) {
+                log.warn("{} is invalid", gene.getGeneSymbol());
+                continue;
+            }
+            Elements trs = document.getElementsByTag("tr");
+            // 获取pathway + map
+            KEGGPathwayMap keggPathwayMap = new KEGGPathwayMap();
+            keggPathwayMap.setGeneSymbol(gene.getGeneSymbol());
+            List<String> pathwayMap = new ArrayList<>();
+            for (int i = 2; i < trs.size(); i++) {
+                Elements td = trs.get(i).getElementsByTag("td");
+                String pathway = td.get(1).html();
+                String map = td.get(0).getElementsByTag("a").html();
+                String mapUrl = String.format("https://www.kegg.jp/pathway/map=%s&keyword=%s", map, gene.getGeneSymbol());
+                String sb = pathway + "(" + mapUrl + ")";
+                pathwayMap.add(sb);
+            }
+            keggPathwayMap.setPathwayMap(pathwayMap);
+
+            // 获取brite
+            List<String> keggIds = getKeggIds(Collections.singletonList(gene.getNcbiGeneId()));
+            if (keggIds != null) {
+                String keggId = keggIds.get(0);
+                RConnection rc = new RConnection();
+                REXP eval;
+                List<KEGGEntity> entities = new ArrayList<>();
+                // 加载kegg库
+                rc.eval("library(KEGGREST)");
+                rc.eval("query <- keggGet(c('" + keggId + "'))");
+                // 查询brite
+                eval = rc.eval("query[[1]]$BRITE");
+                String keggBrite;
+                if (eval.isNull()) {
+                    keggBrite = null;
+                } else {
+                    String[] strings = eval.asStrings();
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < strings.length - 1; i++) {
+                        if (strings[i + 1].trim().startsWith(gene.getNcbiGeneId())) {
+                            sb.append(strings[i].trim());
+                            sb.append("; ");
+                        }
+                    }
+                    keggBrite = sb.toString();
+                }
+                keggPathwayMap.setBrite(keggBrite);
+            }
+            // 存储
+            res.add(keggPathwayMap);
+        }
+        return res;
+    }
+
+
 }

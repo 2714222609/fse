@@ -3,10 +3,13 @@ package com.edu.hzau.cocs.fe.controller;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.edu.hzau.cocs.fe.pojo.Gene;
 import com.edu.hzau.cocs.fe.service.QueryService;
+import com.edu.hzau.cocs.fe.utils.KEGGUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -27,7 +30,7 @@ import java.util.Map;
 @RestController
 public class QueryController {
     @Autowired
-    QueryService queryService;
+    private QueryService queryService;
 
     @PostMapping("/query")
     public JSONArray query(@RequestBody JSONObject jsonObject) {
