@@ -12,7 +12,7 @@ import java.util.Map;
  * @Author yue
  */
 @Component
-public class ResMapper {
+public class ResultMapper {
 
     @Autowired
     JdbcTemplate jdbcTemplate;

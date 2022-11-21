@@ -40,6 +40,15 @@ public class QueryService {
             }else {
                 log.info("Query cache missed.");
                 resultJson = graalService.query((String) datalog);
+                // todo
+                // 重写后datalog
+
+                // 转为Datalog object
+
+                // 执行BPMN流程
+
+                // 结果转换
+
                 // 缓存到redis
                 resultString = resultJson.toString();
                 redisService.setString(key, resultString);

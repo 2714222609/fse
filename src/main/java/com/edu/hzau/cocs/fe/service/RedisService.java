@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class RedisService {
-    final int EXPIRE_TIME = 30;
+    private static final int EXPIRE_TIME = 30;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 

@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * @Description 爬取KEGG数据
  * @Author yue
  */
 @Slf4j

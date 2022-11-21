@@ -2,7 +2,6 @@ package com.edu.hzau.cocs.fe.service;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.edu.hzau.cocs.fe.mapper.ResultMapper;
 import com.edu.hzau.cocs.fe.pojo.datasource.RDBMSSource;
 import com.edu.hzau.cocs.fe.pojo.datasource.Source;
 import com.edu.hzau.cocs.fe.pojo.datasource.SourceRepo;
@@ -18,7 +17,6 @@ import fr.lirmm.graphik.graal.io.dlp.DlgpParser;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -30,15 +28,11 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class GraalService {
+public class GraalService2 {
 
     private static final SourceRepo repo = SourceRepo.getSwineSourceRepo();
 
-    @Autowired
-    ResultMapper resultMapper;
-
-    public JSONArray query(String datalog) {
-
+    public String query(String datalog) {
         try {
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);
@@ -55,23 +49,11 @@ public class GraalService {
             String datalogRewrite= Dlgpz.writeToString(optimisedQueries);
             log.info("Datalog after rewriting ---> " + datalogRewrite); // 重写后的datalog
 
-            String sqlquery = SqlTranslation.translate(datalogRewrite);
-            log.info("sql ---> " + sqlquery);
-            it.close();
-
-            JSONArray jsonArray = resultMapper.queryForJson(sqlquery);
-            log.info("jsonArray ---> " + jsonArray);
-            return jsonArray;
-
+            return datalogRewrite;
         } catch (Exception e) {
-            JSONArray resultJson = new JSONArray();
-            JSONObject responseInfo = new JSONObject();
-            responseInfo.put("err", "You have an error in your datalog syntax.");
-            resultJson.add(responseInfo);
             log.error(e.getMessage());
-            return resultJson;
+            return "You have an error in your datalog syntax.";
         }
-
     }
 
     private Ontology createRDBMSOntology(Set<Source> sourcePool) throws Exception {
