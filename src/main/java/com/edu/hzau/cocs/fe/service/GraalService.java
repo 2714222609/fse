@@ -47,7 +47,7 @@ public class GraalService {
             PureRewriter rewriter = new PureRewriter();
             CloseableIteratorWithoutException<ConjunctiveQuery> it = rewriter.execute(query, onto);
             UnionOfConjunctiveQueries ucq = new DefaultUnionOfConjunctiveQueries(query.getAnswerVariables(), it);
-            log.info("UnionOfConjunctiveQueries ---> " + ucq);
+//            log.info("UnionOfConjunctiveQueries ---> " + ucq);
 
             Collection<ConjunctiveQuery> optimisedQueries = UCQOptimisation(ucq);
             log.info("OptimisedQueries ---> " + optimisedQueries); // 优化后的datalog

@@ -40,5 +40,8 @@ public interface Constants {
             "where generates.swine_index = swine.swine_index " +
             "and generates.metabolism_index = metabolism.metabolism_index ";
 
+    // 表结构
+
+
 
 }
