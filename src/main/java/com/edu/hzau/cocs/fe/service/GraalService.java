@@ -2,11 +2,11 @@ package com.edu.hzau.cocs.fe.service;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.edu.hzau.cocs.fe.mapper.ResultMapper;
 import com.edu.hzau.cocs.fe.pojo.datasource.RDBMSSource;
 import com.edu.hzau.cocs.fe.pojo.datasource.Source;
 import com.edu.hzau.cocs.fe.pojo.datasource.SourceRepo;
 import com.edu.hzau.cocs.fe.utils.Dlgpz;
+import com.edu.hzau.cocs.fe.utils.SecurityUtils;
 import fr.lirmm.graphik.graal.api.core.ConjunctiveQuery;
 import fr.lirmm.graphik.graal.api.core.Ontology;
 import fr.lirmm.graphik.graal.api.core.Predicate;
@@ -18,6 +18,12 @@ import fr.lirmm.graphik.graal.io.dlp.DlgpParser;
 import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,22 +38,31 @@ import java.util.*;
 @Service
 public class GraalService {
 
-    private static final SourceRepo repo = SourceRepo.getSwineSourceRepo();
+    @Autowired
+    private TaskRuntime taskRuntime;
 
     @Autowired
-    ResultMapper resultMapper;
+    private SecurityUtils securityUtils;
 
-    public JSONArray query(String datalog) {
+    private static final SourceRepo repo = SourceRepo.getSwineSourceRepo();
 
+    public String rewriteDatalog(String datalog) {
         try {
+            securityUtils.logInAs("user_00");
+            Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
+            for (Task task : taskPage.getContent()) {
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+                log.info("> 任务完成: {}", task);
+            }
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);
-            log.info("ConjunctiveQuery ---> " + query);
+//            log.info("> ConjunctiveQuery: {}", query);
 
             PureRewriter rewriter = new PureRewriter();
             CloseableIteratorWithoutException<ConjunctiveQuery> it = rewriter.execute(query, onto);
             UnionOfConjunctiveQueries ucq = new DefaultUnionOfConjunctiveQueries(query.getAnswerVariables(), it);
-//            log.info("UnionOfConjunctiveQueries ---> " + ucq);
+//            log.info("> UnionOfConjunctiveQueries: {}", ucq);
 
             Collection<ConjunctiveQuery> optimisedQueries = UCQOptimisation(ucq);
             log.info("OptimisedQueries ---> " + optimisedQueries); // 优化后的datalog
@@ -55,23 +70,11 @@ public class GraalService {
             String datalogRewrite= Dlgpz.writeToString(optimisedQueries);
             log.info("Datalog after rewriting ---> " + datalogRewrite); // 重写后的datalog
 
-            String sqlquery = SqlTranslation.translate(datalogRewrite);
-            log.info("sql ---> " + sqlquery);
-            it.close();
-
-            JSONArray jsonArray = resultMapper.queryForJson(sqlquery);
-            log.info("jsonArray ---> " + jsonArray);
-            return jsonArray;
-
+            return datalogRewrite;
         } catch (Exception e) {
-            JSONArray resultJson = new JSONArray();
-            JSONObject responseInfo = new JSONObject();
-            responseInfo.put("err", "You have an error in your datalog syntax.");
-            resultJson.add(responseInfo);
             log.error(e.getMessage());
-            return resultJson;
+            return "You have an error in your datalog syntax.";
         }
-
     }
 
     private Ontology createRDBMSOntology(Set<Source> sourcePool) throws Exception {
