@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.edu.hzau.cocs.fe.pojo.Datalog;
+import com.edu.hzau.cocs.fe.pojo.SwineMetabolismHmdbRes;
 import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
 import com.edu.hzau.cocs.fe.utils.CommonUtils;
 import com.edu.hzau.cocs.fe.utils.DateUtils;
@@ -78,11 +79,18 @@ public class QueryService {
                 Datalog datalog = datalogParser.parseDatalog(rewriteDatalog);
                 log.info("> Datalog object: {}", datalog);
                 // 执行流程
-                List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList = subQueryService.isHostOf(datalog);
-                List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggRes = subQueryService.changeTheExpressionByMicrobiota(datalog, swineMicrobeGeneKeggResList);
-                List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggAns = subQueryService.hasGeneKeggInfo(datalog, swineMicrobeGeneKeggRes);
+                if (!processDefinitionKey.equals("Q4")) {
+                    List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList = subQueryService.isHostOf(datalog);
+                    List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggRes = subQueryService.changeTheExpressionByMicrobiota(datalog, swineMicrobeGeneKeggResList);
+                    List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggAns = subQueryService.hasGeneKeggInfo(datalog, swineMicrobeGeneKeggRes);
+                    resultJson = JSONArray.parseArray(JSON.toJSONString(swineMicrobeGeneKeggAns));
+                }else {
+                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList = subQueryService.generates(datalog);
+                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResAns = subQueryService.hasHmdbInfo(datalog, swineMetabolismHmdbResList);
+                    resultJson = JSONArray.parseArray(JSON.toJSONString(swineMetabolismHmdbResAns));
+                }
+
                 // 结果转换
-                resultJson = JSONArray.parseArray(JSON.toJSONString(swineMicrobeGeneKeggAns));
                 Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
                 for (Task task : taskPage.getContent()) {
                     taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
