@@ -8,6 +8,8 @@ import com.edu.hzau.cocs.fe.service.QueryService;
 import com.edu.hzau.cocs.fe.utils.KEGGUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.Rserve.RserveException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,7 @@ public class QueryController {
     private QueryService queryService;
 
     @PostMapping("/query")
-    public JSONArray query(@RequestBody JSONObject jsonObject) {
+    public JSONArray query(@RequestBody JSONObject jsonObject) throws REXPMismatchException, IOException, RserveException {
         return queryService.query(jsonObject);
     }
 

@@ -13,9 +13,12 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.Rserve.RserveException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +91,7 @@ public class SubQueryService {
         return subQueryMapper.getGeneByMicrobe(subQuerySql.toString(), swineMicrobeGeneKeggResList);
     }
 
-    public List<SwineMicrobeGeneKeggRes> hasGeneKeggInfo(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) {
+    public List<SwineMicrobeGeneKeggRes> hasGeneKeggInfo(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws REXPMismatchException, IOException, RserveException {
         StringBuilder subQuerySql = new StringBuilder(Constants.HAS_GENE_KEGG_INFO);
         Map<String, String> relationship = datalog.getRelationship();
         if (relationship.containsKey("has_gene_kegg_info")) {
@@ -112,6 +115,7 @@ public class SubQueryService {
             log.info("> 任务完成: {}", task);
         }
         return subQueryMapper.getKeggByGene(subQuerySql.toString(), swineMicrobeGeneKeggResList);
+//        return subQueryMapper.getKeggByGeneOnline(swineMicrobeGeneKeggResList);
     }
 
     public List<SwineMetabolismHmdbRes> generates(Datalog datalog) {
@@ -163,6 +167,7 @@ public class SubQueryService {
             taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
             log.info("> 任务完成: {}", task);
         }
+//        return subQueryMapper.getHmdbByMetabolismOnline(subQuerySql.toString(), swineMetabolismHmdbResList);
         return subQueryMapper.getHmdbByMetabolism(subQuerySql.toString(), swineMetabolismHmdbResList);
     }
 

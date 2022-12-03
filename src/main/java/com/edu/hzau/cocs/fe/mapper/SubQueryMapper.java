@@ -1,12 +1,22 @@
 package com.edu.hzau.cocs.fe.mapper;
 
+import com.edu.hzau.cocs.fe.pojo.Gene;
+import com.edu.hzau.cocs.fe.pojo.HMDBEntity;
 import com.edu.hzau.cocs.fe.pojo.SwineMetabolismHmdbRes;
 import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
+import com.edu.hzau.cocs.fe.pojo.datasource.KEGGPathwayMap;
+import com.edu.hzau.cocs.fe.utils.HMDBUtils;
+import com.edu.hzau.cocs.fe.utils.KEGGUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.Rserve.RserveException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +25,14 @@ import java.util.Map;
  * @Author yue
  */
 @Component
+@Slf4j
 public class SubQueryMapper {
     @Resource
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    KEGGUtils keggUtils;
+    @Autowired
+    HMDBUtils hmdbUtils;
 
     public List<SwineMicrobeGeneKeggRes> getMicrobeBySwine(String sql) {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -58,6 +73,24 @@ public class SubQueryMapper {
         }
         return swineMicrobeGeneKeggAns;
     }
+    public List<SwineMicrobeGeneKeggRes> getKeggByGeneOnline(List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList)  {
+        List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResAns = new ArrayList<>();
+        for (SwineMicrobeGeneKeggRes swineMicrobeGeneKeggRes : swineMicrobeGeneKeggResList) {
+            Gene gene = new Gene(swineMicrobeGeneKeggRes.getGeneSymbol(), String.valueOf(swineMicrobeGeneKeggRes.getNcbiGeneId()));
+            try {
+                List<Gene> geneList = new ArrayList<>();
+                geneList.add(gene);
+                List<KEGGPathwayMap> keggPathwayMapList = keggUtils.getKeggPathwayMap(geneList);
+                KEGGPathwayMap keggPathwayMap = keggPathwayMapList.get(0);
+                SwineMicrobeGeneKeggRes swineMicrobeGeneKeggResNew = swineMicrobeGeneKeggRes.clone();
+                swineMicrobeGeneKeggResNew.setGeneKeggPathway(keggPathwayMap.getPathwayMap().toString());
+                swineMicrobeGeneKeggResAns.add(swineMicrobeGeneKeggResNew);
+            } catch (REXPMismatchException | IOException | RserveException e) {
+                log.warn("{} get gene pathway online fail.", gene.getGeneSymbol());
+            }
+        }
+        return swineMicrobeGeneKeggResAns;
+    }
 
     public List<SwineMetabolismHmdbRes> getMetabolismBySwine(String sql) {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -78,11 +111,37 @@ public class SubQueryMapper {
                 SwineMetabolismHmdbRes swineMetabolismHmdbResNew = swineMetabolismHmdbRes.clone();
                 swineMetabolismHmdbResNew.setHmdbInfoIndex((Integer) resMap.get("hmdb_info_index"));
                 swineMetabolismHmdbResNew.setHmdbPathway(String.valueOf(resMap.get("hmdb_pathway")));
+                swineMetabolismHmdbResNew.setMetabolismHmdbInfoIndex(String.valueOf(resMap.get("metabolism_hmdb_info_index")));
+                swineMetabolismHmdbResNew.setHmdbPathwayUrl(String.valueOf(resMap.get("kegg_url")));
                 swineMetabolismHmdbResAns.add(swineMetabolismHmdbResNew);
             }
         }
         return swineMetabolismHmdbResAns;
     }
+
+    public List<SwineMetabolismHmdbRes> getHmdbByMetabolismOnline(String sql, List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList) {
+        List<SwineMetabolismHmdbRes> swineMetabolismHmdbResAns = new ArrayList<>();
+        for (SwineMetabolismHmdbRes swineMetabolismHmdbRes : swineMetabolismHmdbResList) {
+            String sqlQuery = sql + " and metabolism.metabolism_index = " + swineMetabolismHmdbRes.getMetabolismIndex();
+            List<Map<String, Object>> resMaps = jdbcTemplate.queryForList(sqlQuery);
+            for (Map<String, Object> resMap : resMaps) {
+                SwineMetabolismHmdbRes swineMetabolismHmdbResNew = swineMetabolismHmdbRes.clone();
+                swineMetabolismHmdbResNew.setHmdbInfoIndex((Integer) resMap.get("hmdb_info_index"));
+                swineMetabolismHmdbResNew.setMetabolismHmdbInfoIndex(String.valueOf(resMap.get("metabolism_hmdb_info_index")));
+                swineMetabolismHmdbResAns.add(swineMetabolismHmdbResNew);
+            }
+        }
+        for (SwineMetabolismHmdbRes swineMetabolismHmdbResAn : swineMetabolismHmdbResAns) {
+            List<String> hmdbid = new ArrayList<>();
+            hmdbid.add(swineMetabolismHmdbResAn.getMetabolismHmdbInfoIndex());
+            List<HMDBEntity> hmdbEntity = hmdbUtils.getHmdbEntity(hmdbid);
+            swineMetabolismHmdbResAn.setHmdbPathway(hmdbEntity.get(0).getPathway());
+            swineMetabolismHmdbResAn.setHmdbPathwayUrl(hmdbEntity.get(0).getPathway());
+        }
+        return swineMetabolismHmdbResAns;
+    }
+
+
 
     public List<String> getTableStructure(String tableName) {
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(String.format("select * from %s limit 0", tableName));

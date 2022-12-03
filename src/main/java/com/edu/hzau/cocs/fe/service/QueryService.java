@@ -18,10 +18,13 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.Rserve.RserveException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,7 +53,7 @@ public class QueryService {
     @Autowired
     private SecurityUtils securityUtils;
 
-    public JSONArray query(@RequestBody JSONObject jsonObject) {
+    public JSONArray query(@RequestBody JSONObject jsonObject) throws REXPMismatchException, IOException, RserveException {
         // response time
         double startTime = dateUtil.getDate();
         double endTime;

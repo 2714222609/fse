@@ -16,7 +16,9 @@ public class SwineMetabolismHmdbRes implements Cloneable{
     private int metabolismIndex;
     private String metabolismName;
     private int hmdbInfoIndex;
+    private String metabolismHmdbInfoIndex;
     private String hmdbPathway;
+    private String hmdbPathwayUrl;
 
     @Override
     public SwineMetabolismHmdbRes clone() {

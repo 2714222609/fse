@@ -30,7 +30,7 @@ public interface Constants {
             "where has_gene_kegg_info.NCBI_gene_id = gene.NCBI_gene_id " +
             "and has_gene_kegg_info.Gene_kegg_index = gene_kegg_info.Gene_kegg_index ";
 
-    String HAS_HMDB_INFO = "select distinct metabolism.metabolism_index, metabolism.metabolism_name, metabolism_hmdb_info.hmdb_info_index, metabolism_hmdb_info.hmdb_pathway " +
+    String HAS_HMDB_INFO = "select distinct metabolism.metabolism_index, metabolism.metabolism_name, metabolism_hmdb_info.hmdb_info_index, metabolism_hmdb_info.metabolism_hmdb_info_index, metabolism_hmdb_info.hmdb_pathway ,metabolism_hmdb_info.kegg_url " +
             "from relationship_entity.has_hmdb_info, gene_info.metabolism_hmdb_info, fsmm.metabolism " +
             "where has_hmdb_info.metabolism_index = metabolism.metabolism_index " +
             "and has_hmdb_info.hmdb_info_index = metabolism_hmdb_info.hmdb_info_index ";
@@ -40,7 +40,6 @@ public interface Constants {
             "where generates.swine_index = swine.swine_index " +
             "and generates.metabolism_index = metabolism.metabolism_index ";
 
-    // 表结构
 
 
 
