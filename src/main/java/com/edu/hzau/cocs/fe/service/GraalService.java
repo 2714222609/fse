@@ -5,12 +5,10 @@ import com.alibaba.fastjson2.JSONObject;
 import com.edu.hzau.cocs.fe.pojo.datasource.RDBMSSource;
 import com.edu.hzau.cocs.fe.pojo.datasource.Source;
 import com.edu.hzau.cocs.fe.pojo.datasource.SourceRepo;
+import com.edu.hzau.cocs.fe.utils.DateUtils;
 import com.edu.hzau.cocs.fe.utils.Dlgpz;
 import com.edu.hzau.cocs.fe.utils.SecurityUtils;
-import fr.lirmm.graphik.graal.api.core.ConjunctiveQuery;
-import fr.lirmm.graphik.graal.api.core.Ontology;
-import fr.lirmm.graphik.graal.api.core.Predicate;
-import fr.lirmm.graphik.graal.api.core.UnionOfConjunctiveQueries;
+import fr.lirmm.graphik.graal.api.core.*;
 import fr.lirmm.graphik.graal.backward_chaining.pure.PureRewriter;
 import fr.lirmm.graphik.graal.core.DefaultUnionOfConjunctiveQueries;
 import fr.lirmm.graphik.graal.core.ruleset.DefaultOntology;
@@ -24,8 +22,10 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.jsoup.helper.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.unit.DataUnit;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -44,10 +44,14 @@ public class GraalService {
     @Autowired
     private SecurityUtils securityUtils;
 
+    @Autowired
+    private DateUtils dateUtils;
+
     private static final SourceRepo repo = SourceRepo.getSwineSourceRepo();
 
     public String rewriteDatalog(String datalog) {
         try {
+            double time = dateUtils.getDate();
             securityUtils.logInAs("user_00");
             Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
             for (Task task : taskPage.getContent()) {
@@ -57,18 +61,22 @@ public class GraalService {
             }
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);
-//            log.info("> ConjunctiveQuery: {}", query);
+            double cjqTime = dateUtils.getDate();
+            log.info("> ConjunctiveQuery time: {}", (cjqTime - time) / 1000);
 
             PureRewriter rewriter = new PureRewriter();
             CloseableIteratorWithoutException<ConjunctiveQuery> it = rewriter.execute(query, onto);
-            UnionOfConjunctiveQueries ucq = new DefaultUnionOfConjunctiveQueries(query.getAnswerVariables(), it);
-//            log.info("> UnionOfConjunctiveQueries: {}", ucq);
+            double citwcTime = dateUtils.getDate();
+            log.info("> Citwc time: {}", (citwcTime - cjqTime) / 1000);
 
-            Collection<ConjunctiveQuery> optimisedQueries = UCQOptimisation(ucq);
-            log.info("OptimisedQueries ---> " + optimisedQueries); // 优化后的datalog
+            Collection<ConjunctiveQuery> optimisedQueries = UCQOptimisation(it);
+            double oqTime = dateUtils.getDate();
+            log.info("> OptimisedQueries time: {}", (oqTime - citwcTime) / 1000); // 优化后的datalog
+            log.info("> OptimisedQueries -- > {}", String.valueOf(optimisedQueries));
 
             String datalogRewrite= Dlgpz.writeToString(optimisedQueries);
-            log.info("Datalog after rewriting ---> " + datalogRewrite); // 重写后的datalog
+            double drTime = dateUtils.getDate();
+            log.info("> Datalog rewrite time: {}", (drTime - oqTime) / 1000); // 重写后的datalog
 
             return datalogRewrite;
         } catch (Exception e) {
@@ -116,15 +124,17 @@ public class GraalService {
         return DlgpParser.parseQuery(wholeString);
     }
 
-    private Collection<ConjunctiveQuery> UCQOptimisation(UnionOfConjunctiveQueries ucq) throws Exception {
+    private Collection<ConjunctiveQuery> UCQOptimisation(CloseableIteratorWithoutException<ConjunctiveQuery> it) throws Exception {
         //get a new iterator for the rewriting result
-        CloseableIterator<ConjunctiveQuery> it = ucq.iterator();
+//        CloseableIterator<ConjunctiveQuery> it = ucq.iterator();
         //get the optimized rewritings for db query
         ConjunctiveQuery lastConjunctiveQuery = null;
         Collection<ConjunctiveQuery> optimisedQueries = new LinkedList<>();
         while (it.hasNext()) {
             boolean match = true;
             lastConjunctiveQuery = it.next();
+            System.out.println(lastConjunctiveQuery.toString());
+            System.out.println();
             Set<Predicate> cqPredicates = lastConjunctiveQuery.getAtomSet().getPredicates();
             for (Predicate p : cqPredicates) {
                 String identifier = p.getIdentifier().toString();

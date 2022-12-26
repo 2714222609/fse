@@ -3,9 +3,9 @@ package com.edu.hzau.cocs.fe.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.edu.hzau.cocs.fe.pojo.Datalog;
 import com.edu.hzau.cocs.fe.pojo.SwineMetabolismHmdbRes;
 import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
+import com.edu.hzau.cocs.fe.pojo.datalog.Datalog;
 import com.edu.hzau.cocs.fe.utils.CommonUtils;
 import com.edu.hzau.cocs.fe.utils.DateUtils;
 import com.edu.hzau.cocs.fe.utils.SecurityUtils;
@@ -35,13 +35,9 @@ import java.util.List;
 public class QueryService {
 
     @Autowired
-    private GraalService graalService;
-    @Autowired
     private DateUtils dateUtil;
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private DatalogParser datalogParser;
     @Autowired
     private SubQueryService subQueryService;
     @Autowired
@@ -52,6 +48,8 @@ public class QueryService {
     private TaskRuntime taskRuntime;
     @Autowired
     private SecurityUtils securityUtils;
+    @Autowired
+    private DatalogParser datalogParser;
 
     public JSONArray query(@RequestBody JSONObject jsonObject) throws REXPMismatchException, IOException, RserveException {
         // response time
@@ -75,12 +73,13 @@ public class QueryService {
                 String processDefinitionKey = commonUtils.getQuestion(String.valueOf(datalogStr));
                 securityUtils.logInAs("user_00");
                 ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start().withProcessDefinitionKey(processDefinitionKey).build());
+                double workFlowTime = dateUtil.getDate();
                 log.info("> Process started: {}", processInstance);
-                // 重写后datalo
-                String rewriteDatalog = graalService.rewriteDatalog(String.valueOf(datalogStr));
-                // 转为Datalog object
-                Datalog datalog = datalogParser.parseDatalog(rewriteDatalog);
-                log.info("> Datalog object: {}", datalog);
+                log.info("> Process workflow start time: {}", (workFlowTime - startTime) / 1000);
+
+                // datalog转为object
+                Datalog datalog = datalogParser.parseDatalog(String.valueOf(datalogStr));
+                double drTime = dateUtil.getDate();
                 // 执行流程
                 if (!processDefinitionKey.equals("Q4")) {
                     List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList = subQueryService.isHostOf(datalog);
@@ -89,10 +88,15 @@ public class QueryService {
                     resultJson = JSONArray.parseArray(JSON.toJSONString(swineMicrobeGeneKeggAns));
                 }else {
                     List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList = subQueryService.generates(datalog);
+                    double date = dateUtil.getDate();
+                    System.out.println("time1: " + (date - drTime) / 1000);
                     List<SwineMetabolismHmdbRes> swineMetabolismHmdbResAns = subQueryService.hasHmdbInfo(datalog, swineMetabolismHmdbResList);
+                    double date1 = dateUtil.getDate();
+                    System.out.println("time2: " + (date1 - date) / 1000);
                     resultJson = JSONArray.parseArray(JSON.toJSONString(swineMetabolismHmdbResAns));
                 }
-
+                double exeTime =dateUtil.getDate();
+                log.info("> Execute time: {}", (exeTime - drTime) / 1000);
                 // 结果转换
                 Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
                 for (Task task : taskPage.getContent()) {
@@ -100,6 +104,8 @@ public class QueryService {
                     taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
                     log.info("> 任务完成: {}", task);
                 }
+                double acTime = dateUtil.getDate();
+                log.info("> Actime: {}", (acTime - exeTime) / 1000);
 //                log.info("> json array: {}", resultJson);
                 // 缓存到redis
                 resultString = resultJson.toString();

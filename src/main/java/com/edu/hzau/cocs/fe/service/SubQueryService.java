@@ -1,10 +1,10 @@
 package com.edu.hzau.cocs.fe.service;
 
-
 import com.edu.hzau.cocs.fe.mapper.SubQueryMapper;
-import com.edu.hzau.cocs.fe.pojo.Datalog;
 import com.edu.hzau.cocs.fe.pojo.SwineMetabolismHmdbRes;
 import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
+import com.edu.hzau.cocs.fe.pojo.datalog.Datalog;
+import com.edu.hzau.cocs.fe.pojo.datalog.Relationship;
 import com.edu.hzau.cocs.fe.utils.Constants;
 import com.edu.hzau.cocs.fe.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,6 @@ import java.util.Map;
 @Slf4j
 @Service
 public class SubQueryService {
-
     @Autowired
     private SubQueryMapper subQueryMapper;
 
@@ -39,21 +38,28 @@ public class SubQueryService {
     @Autowired
     private SecurityUtils securityUtils;
 
+    private static final Map<String, String> mapper = new HashMap<>();
+    static {
+        String[] k = {"p_value_dpf_tpf_difference", "microbe_time", "group",
+                "p_age_difference", "metabolome_difference", "metabolism_time"};
+        String[] v = {"fsmm.microbe.microbe_dpf_tpf_difference", "fsmm.microbe.days",
+                "fsmm.microbe.col", "fsmm.microbe.microbe_age_difference", "fsmm.metabolism.metabolome_difference",
+                "metabolism_time"};
+        for(int i = 0; i < k.length; i++) {
+            mapper.put(k[i], v[i]);
+        }
+    }
+
     public List<SwineMicrobeGeneKeggRes> isHostOf(Datalog datalog) {
         StringBuilder subQuerySql = new StringBuilder(Constants.IS_HOST_OF);
-        Map<String, String> relationship = datalog.getRelationship();
-        if (relationship.containsKey("is_host_of")) {
-            String relationshipStr = relationship.get("is_host_of");
-            subQuerySql.append(String.format( " and is_host_of.relationship = '%s'", relationshipStr));
-        }
-        Map<String, Map<String, String>> attribute = datalog.getAttribute();
-        if (attribute.containsKey("swine")) {
-            Map<String, String> swineMap = attribute.get("swine");
-            swineMap.forEach((k,v) -> subQuerySql.append(String.format(" and swine.%s = '%s'", k, v)));
-        }
-        if (attribute.containsKey("microbe")) {
-            Map<String, String> microbeMap = attribute.get("microbe");
-            microbeMap.forEach((k,v) -> subQuerySql. append(String.format(" and microbe.%s = '%s'", k, v)));
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("is_host_of")) {
+            Relationship is_host_of = relationships.get("is_host_of");
+            Map<String, String> attributeMap = is_host_of.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s = '%s'", nk, v));
+            });
         }
         securityUtils.logInAs("user_00");
         Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
@@ -67,19 +73,14 @@ public class SubQueryService {
 
     public List<SwineMicrobeGeneKeggRes> changeTheExpressionByMicrobiota(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) {
         StringBuilder subQuerySql = new StringBuilder(Constants.CHANGE_THE_EXPRESSION_BY_MICROBIOTA);
-        Map<String, String> relationship = datalog.getRelationship();
-        if (relationship.containsKey("change_the_expression_by_microbiota")) {
-            String relationshipStr = relationship.get("change_the_expression_by_microbiota");
-            subQuerySql.append(String.format( " and change_the_expression_by_microbiota.relationship = '%s'", relationshipStr));
-        }
-        Map<String, Map<String, String>> attribute = datalog.getAttribute();
-        if (attribute.containsKey("microbe")) {
-            Map<String, String> swineMap = attribute.get("microbe");
-            swineMap.forEach((k,v) -> subQuerySql.append(String.format(" and microbe.%s = '%s'", k, v)));
-        }
-        if (attribute.containsKey("gene")) {
-            Map<String, String> microbeMap = attribute.get("gene");
-            microbeMap.forEach((k,v) -> subQuerySql. append(String.format(" and gene.%s = '%s'", k, v)));
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("changes_the_expression_by_microbiota")) {
+            Relationship changes_the_expression_by_microbiota = relationships.get("changes_the_expression_by_microbiota");
+            Map<String, String> attributeMap = changes_the_expression_by_microbiota.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s = '%s'", nk, v));
+            });
         }
         securityUtils.logInAs("user_00");
         Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
@@ -93,19 +94,14 @@ public class SubQueryService {
 
     public List<SwineMicrobeGeneKeggRes> hasGeneKeggInfo(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws REXPMismatchException, IOException, RserveException {
         StringBuilder subQuerySql = new StringBuilder(Constants.HAS_GENE_KEGG_INFO);
-        Map<String, String> relationship = datalog.getRelationship();
-        if (relationship.containsKey("has_gene_kegg_info")) {
-            String relationshipStr = relationship.get("has_gene_kegg_info");
-            subQuerySql.append(String.format( " and has_gene_kegg_info.relationship = '%s'", relationshipStr));
-        }
-        Map<String, Map<String, String>> attribute = datalog.getAttribute();
-        if (attribute.containsKey("gene")) {
-            Map<String, String> swineMap = attribute.get("gene");
-            swineMap.forEach((k,v) -> subQuerySql.append(String.format(" and gene.%s = '%s'", k, v)));
-        }
-        if (attribute.containsKey("gene_kegg_info")) {
-            Map<String, String> microbeMap = attribute.get("gene_kegg_info");
-            microbeMap.forEach((k,v) -> subQuerySql. append(String.format(" and gene_kegg_info.%s = '%s'", k, v)));
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("has_gene_kegg_info")) {
+            Relationship has_gene_kegg_info = relationships.get("has_gene_kegg_info");
+            Map<String, String> attributeMap = has_gene_kegg_info.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s = '%s'", nk, v));
+            });
         }
         securityUtils.logInAs("user_00");
         Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
@@ -120,19 +116,14 @@ public class SubQueryService {
 
     public List<SwineMetabolismHmdbRes> generates(Datalog datalog) {
         StringBuilder subQuerySql = new StringBuilder(Constants.GENERATES);
-        Map<String, String> relationship = datalog.getRelationship();
-        if (relationship.containsKey("generates")) {
-            String relationshipStr = relationship.get("generates");
-            subQuerySql.append(String.format( " and generates.relationship = '%s'", relationshipStr));
-        }
-        Map<String, Map<String, String>> attribute = datalog.getAttribute();
-        if (attribute.containsKey("swine")) {
-            Map<String, String> swineMap = attribute.get("swine");
-            swineMap.forEach((k,v) -> subQuerySql.append(String.format(" and swine.%s = '%s'", k, v)));
-        }
-        if (attribute.containsKey("metabolism")) {
-            Map<String, String> microbeMap = attribute.get("metabolism");
-            microbeMap.forEach((k,v) -> subQuerySql. append(String.format(" and metabolism.%s = '%s'", k, v)));
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("generates")) {
+            Relationship generates = relationships.get("generates");
+            Map<String, String> attributeMap = generates.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s = '%s'", nk, v));
+            });
         }
         securityUtils.logInAs("user_00");
         Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
@@ -141,24 +132,20 @@ public class SubQueryService {
             taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
             log.info("> 任务完成: {}", task);
         }
+        System.out.println(subQuerySql);
         return subQueryMapper.getMetabolismBySwine(subQuerySql.toString());
     }
 
     public List<SwineMetabolismHmdbRes> hasHmdbInfo(Datalog datalog, List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList) {
         StringBuilder subQuerySql = new StringBuilder(Constants.HAS_HMDB_INFO);
-        Map<String, String> relationship = datalog.getRelationship();
-        if (relationship.containsKey("has_hmdb_info")) {
-            String relationshipStr = relationship.get("has_hmdb_info");
-            subQuerySql.append(String.format( " and has_hmdb_info.relationship = '%s'", relationshipStr));
-        }
-        Map<String, Map<String, String>> attribute = datalog.getAttribute();
-        if (attribute.containsKey("gene")) {
-            Map<String, String> swineMap = attribute.get("metabolism");
-            swineMap.forEach((k,v) -> subQuerySql.append(String.format(" and metabolism.%s = '%s'", k, v)));
-        }
-        if (attribute.containsKey("metabolism_hmdb_info")) {
-            Map<String, String> microbeMap = attribute.get("metabolism_hmdb_info");
-            microbeMap.forEach((k,v) -> subQuerySql. append(String.format(" and metabolism_hmdb_info.%s = '%s'", k, v)));
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("has_hmdb_info")) {
+            Relationship has_hmdb_info = relationships.get("has_hmdb_info");
+            Map<String, String> attributeMap = has_hmdb_info.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s = '%s'", nk, v));
+            });
         }
         securityUtils.logInAs("user_00");
         Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
@@ -167,8 +154,8 @@ public class SubQueryService {
             taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
             log.info("> 任务完成: {}", task);
         }
+        System.out.println(subQuerySql);
 //        return subQueryMapper.getHmdbByMetabolismOnline(subQuerySql.toString(), swineMetabolismHmdbResList);
         return subQueryMapper.getHmdbByMetabolism(subQuerySql.toString(), swineMetabolismHmdbResList);
     }
-
 }

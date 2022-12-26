@@ -2,9 +2,15 @@ package com.edu.hzau.cocs.fe;
 
 import com.alibaba.fastjson2.JSONArray;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @Author yue
@@ -90,4 +96,10 @@ public class SwineTests {
 //                "attribute:metabolome_pathway_url(Hmdb_info_index,Metabolome_pathway_url),\n" +
 //                "attribute:metabolome_pathway(Hmdb_info_index,Metabolome_pathway).");
 //    }
+    @Test
+    public void test() throws IOException {
+        Document document = Jsoup.parse(new URL("https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=Il12b"), 20000);
+        System.out.println(document);
+    }
+
 }

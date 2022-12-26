@@ -177,7 +177,7 @@ public class KEGGUtils {
         for (Gene gene : geneList) {
             Document document = null;
             try {
-                 document = Jsoup.parse(new URL(KEGG_PATHWAY_URL + gene.getGeneSymbol()), 5000);
+                 document = Jsoup.parse(new URL(KEGG_PATHWAY_URL + gene.getGeneSymbol()), 20000);
             } catch (IOException e) {
                 log.warn("{} is invalid", gene.getGeneSymbol());
                 continue;
