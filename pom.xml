@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0</version>
+        <version>2.3.12.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.edu.hzau.cocs</groupId>
@@ -13,9 +13,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>fe</name>
     <description>fe</description>
-    <properties>
-        <java.version>11</java.version>
-    </properties>
+<!--    <properties>-->
+<!--        <java.version>11</java.version>-->
+<!--    </properties>-->
     <repositories>
         <repository>
             <id>Clojars Repository</id>

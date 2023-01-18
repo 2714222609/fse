@@ -143,8 +143,8 @@ public class SubQueryMapper {
 
 
 
-    public List<String> getTableStructure(String tableName) {
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(String.format("select * from %s limit 0", tableName));
-        return List.of(sqlRowSet.getMetaData().getColumnNames());
-    }
+//    public List<String> getTableStructure(String tableName) {
+//        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(String.format("select * from %s limit 0", tableName));
+//        return List.of(sqlRowSet.getMetaData().getColumnNames());
+//    }
 }
