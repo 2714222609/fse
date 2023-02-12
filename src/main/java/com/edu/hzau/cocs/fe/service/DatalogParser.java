@@ -37,7 +37,7 @@ public class DatalogParser {
             String[] re = relationships[i].split("\\),");
             for (int j = 0; j < re.length; j++) {
                 if (j == 0) {
-                    String relationship = re[j].substring(0, re[j].indexOf("(")-2);
+                    String relationship = re[j].substring(0, re[j].indexOf("("));
                     rela.setRelationship(relationship);
                 } else {
                     if (re[j].contains("<")) {
@@ -57,44 +57,44 @@ public class DatalogParser {
     public void test() {
         DatalogParser datalogParser = new DatalogParser();
         String datalog1 = "?(Microbe_name,Gene_symbol,Gene_kegg_pathway):-\n" +
-                "relationship:is_host_ofQ1(Swine_index,Microbe_id,<100>),\n" +
+                "relationship:is_host_of(Swine_index,Microbe_id,<100>),\n" +
                 "attribute:p_value_dpf_tpf_difference(Microbe_id,<1>),\n" +
                 "attribute:microbe_name(Microbe_id,Microbe_name),\n" +
                 "attribute:microbe_time(Microbe_id,<100>),\n" +
-                "relationship:changes_the_expression_by_microbiotaQ1(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
+                "relationship:changes_the_expression_by_microbiota(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
                 "attribute:gene_symbol(Ncbi_gene_id,Gene_symbol),\n" +
-                "relationship:has_gene_kegg_infoQ1(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
+                "relationship:has_gene_kegg_info(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
                 "attribute:gene_kegg_pathway(Gene_kegg_id,Gene_kegg_pathway).";
         String datalog2 = "?(Microbe_name,Gene_symbol,Gene_kegg_pathway):-\n" +
-                "relationship:is_host_ofQ2(Swine_index,Microbe_id,<80>),\n" +
+                "relationship:is_host_of(Swine_index,Microbe_id,<80>),\n" +
                 "attribute:group(Microbe_id,<A1>),\n" +
                 "attribute:p_age_difference(Microbe_id,<1>),\n" +
                 "attribute:microbe_name(Microbe_id,Microbe_name),\n" +
                 "attribute:microbe_time(Microbe_id,<80>),\n" +
-                "relationship:changes_the_expression_by_microbiotaQ2(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
+                "relationship:changes_the_expression_by_microbiota(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
                 "attribute:gene_symbol(Ncbi_gene_id,Gene_symbol),\n" +
-                "relationship:has_gene_kegg_infoQ2(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
+                "relationship:has_gene_kegg_info(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
                 "attribute:gene_kegg_pathway(Gene_kegg_id,Gene_kegg_pathway).";
         String datalog3 = "?(Microbe_name,Gene_symbol,Gene_kegg_pathway):-\n" +
-                "relationship:is_host_ofQ3(Swine_index,Microbe_id,<131>),\n" +
+                "relationship:is_host_of(Swine_index,Microbe_id,<131>),\n" +
                 "attribute:group(Microbe_id,<A1>),\n" +
                 "attribute:p_age_difference(Microbe_id,<1>),\n" +
                 "attribute:microbe_name(Microbe_id,Microbe_name),\n" +
                 "attribute:microbe_time(Microbe_id,<131>),\n" +
-                "relationship:changes_the_expression_by_microbiotaQ3(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
+                "relationship:changes_the_expression_by_microbiota(Microbe_id,Ncbi_gene_id,<change_the_expression_by_microbiota>),\n" +
                 "attribute:gene_symbol(Ncbi_gene_id,Gene_symbol),\n" +
-                "relationship:has_gene_kegg_infoQ3(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
+                "relationship:has_gene_kegg_info(Ncbi_gene_id,Gene_kegg_id,<has_gene_kegg_info>),\n" +
                 "attribute:gene_kegg_pathway(Gene_kegg_id,Gene_kegg_pathway).";
         String datalog4 = "?(Metabolome_name,Metabolome_pathway,Metabolome_pathway_url):-\n" +
-                "relationship:generatesQ4(Swine_index,Metabolome_index,<generates>),\n" +
+                "relationship:generates(Swine_index,Metabolome_index,<generates>),\n" +
                 "attribute:metabolome_difference(Metabolome_index,<1>),\n" +
                 "attribute:metabolism_name(Metabolome_index,Metabolome_name),\n" +
                 "attribute:metabolism_time(Metabolome_index,<155>),\n" +
-                "relationship:has_hmdb_infoQ4(Hmdb_info_index,Metabolome_index,<has_hmdb_info>),\n" +
+                "relationship:has_hmdb_info(Hmdb_info_index,Metabolome_index,<has_hmdb_info>),\n" +
                 "attribute:metabolome_hmdb_index(Hmdb_info_index,Metabolome_hmdb_index),\n" +
                 "attribute:metabolome_pathway(Hmdb_info_index,Metabolome_pathway),\n" +
                 "attribute:metabolome_pathway_url(Hmdb_info_index,Metabolome_pathway_url).";
-        Datalog datalog = datalogParser.parseDatalog(datalog2);
+        Datalog datalog = datalogParser.parseDatalog(datalog1);
         System.out.println(datalog);
     }
 }
