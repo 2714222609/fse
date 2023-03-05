@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -143,8 +144,8 @@ public class SubQueryMapper {
 
 
 
-//    public List<String> getTableStructure(String tableName) {
-//        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(String.format("select * from %s limit 0", tableName));
-//        return List.of(sqlRowSet.getMetaData().getColumnNames());
-//    }
+    public List<String> getTableStructure(String tableName) {
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(String.format("select * from %s limit 0", tableName));
+        return Arrays.asList(sqlRowSet.getMetaData().getColumnNames());
+    }
 }
