@@ -68,35 +68,35 @@ public class QueryService {
                 resultJson = JSONArray.parseArray(resultString);
             } else {
                 log.info("> Query cache missed.");
-                // 启动流程引擎
-                String processDefinitionKey = commonUtils.getQuestion(String.valueOf(datalogStr));
-                securityUtils.logInAs("user_00");
-                ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start().withProcessDefinitionKey(processDefinitionKey).build());
-                log.info("> Process started: {}", processInstance);
+//                // 启动流程引擎
+//                String processDefinitionKey = commonUtils.getQuestion(String.valueOf(datalogStr));
+//                securityUtils.logInAs("user_00");
+//                ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start().withProcessDefinitionKey(processDefinitionKey).build());
+//                log.info("> Process started: {}", processInstance);
                 // 重写后datalo
                 String rewriteDatalog = graalService.rewriteDatalog(String.valueOf(datalogStr));
                 // 转为Datalog object
                 Datalog datalog = datalogParser.parseDatalog(rewriteDatalog);
                 log.info("> Datalog object: {}", datalog);
                 // 执行流程
-                if (!processDefinitionKey.equals("Q4")) {
+//                if (!processDefinitionKey.equals("Q4")) {
                     List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList = subQueryService.isHostOf(datalog);
                     List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggRes = subQueryService.changeTheExpressionByMicrobiota(datalog, swineMicrobeGeneKeggResList);
                     List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggAns = subQueryService.hasGeneKeggInfo(datalog, swineMicrobeGeneKeggRes);
                     resultJson = JSONArray.parseArray(JSON.toJSONString(swineMicrobeGeneKeggAns));
-                }else {
-                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList = subQueryService.generates(datalog);
-                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResAns = subQueryService.hasHmdbInfo(datalog, swineMetabolismHmdbResList);
-                    resultJson = JSONArray.parseArray(JSON.toJSONString(swineMetabolismHmdbResAns));
-                }
+//                }else {
+//                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList = subQueryService.generates(datalog);
+//                    List<SwineMetabolismHmdbRes> swineMetabolismHmdbResAns = subQueryService.hasHmdbInfo(datalog, swineMetabolismHmdbResList);
+//                    resultJson = JSONArray.parseArray(JSON.toJSONString(swineMetabolismHmdbResAns));
+//                }
 
-                // 结果转换
-                Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-                for (Task task : taskPage.getContent()) {
-                    taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-                    taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-                    log.info("> 任务完成: {}", task);
-                }
+//                // 结果转换
+//                Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
+//                for (Task task : taskPage.getContent()) {
+//                    taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+//                    taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+//                    log.info("> 任务完成: {}", task);
+//                }
 //                log.info("> json array: {}", resultJson);
                 // 缓存到redis
                 resultString = resultJson.toString();
