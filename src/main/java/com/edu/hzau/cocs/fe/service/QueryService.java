@@ -52,7 +52,7 @@ public class QueryService {
     @Autowired
     private DatalogParser datalogParser;
 
-    public JSONArray query(@RequestBody JSONObject jsonObject) throws REXPMismatchException, IOException, RserveException {
+    public JSONArray query(JSONObject jsonObject) throws REXPMismatchException, IOException, RserveException {
         // response time
         double startTime = dateUtil.getDate();
         double endTime;
