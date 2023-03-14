@@ -1,6 +1,7 @@
 package com.edu.hzau.cocs.fe.service;
 
 import com.edu.hzau.cocs.fe.mapper.SubQueryMapper;
+import com.edu.hzau.cocs.fe.pojo.DisDrugTarGenePath;
 import com.edu.hzau.cocs.fe.pojo.SwineMetabolismHmdbRes;
 import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
 import com.edu.hzau.cocs.fe.pojo.datalog.Datalog;
@@ -41,14 +42,72 @@ public class SubQueryService {
     private static final Map<String, String> mapper = new HashMap<>();
     static {
         String[] k = {"p_value_dpf_tpf_difference", "microbe_time", "group",
-                "p_age_difference", "metabolome_difference", "metabolism_time"};
+                "p_age_difference", "metabolome_difference", "metabolism_time","ORPHAN_name"};
         String[] v = {"fsmm.microbe.microbe_dpf_tpf_difference", "fsmm.microbe.days",
                 "fsmm.microbe.col", "fsmm.microbe.microbe_age_difference", "fsmm.metabolism.metabolome_difference",
-                "metabolism_time"};
+                "metabolism_time","biomedentity.raredisinfo.ORPHAN_name"};
         for(int i = 0; i < k.length; i++) {
             mapper.put(k[i], v[i]);
         }
     }
+
+    //biomed start
+    public List<DisDrugTarGenePath> curesOf(Datalog datalog) {
+        StringBuilder subQuerySql = new StringBuilder(Constants.CURES_OF);
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("cures_of")) {
+            Relationship cures_of = relationships.get("cures_of");
+            Map<String, String> attributeMap = cures_of.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s ='%s'", nk, v));
+            });
+        }
+        System.out.println(subQuerySql);
+        return subQueryMapper.getDrugByRareDis(subQuerySql.toString());
+    }
+    public List<DisDrugTarGenePath> hasFunctionsIn(Datalog datalog, List<DisDrugTarGenePath> DisDrugTarGenePathList) {
+        StringBuilder subQuerySql = new StringBuilder(Constants.HAS_FUNCTIONS_IN);
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("has_functions_in")) {
+            Relationship has_functions_in = relationships.get("has_functions_in");
+            Map<String, String> attributeMap = has_functions_in.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s ='%s'", nk, v));
+            });
+        }
+        return subQueryMapper.getTarByDrug(subQuerySql.toString(), DisDrugTarGenePathList);
+    }
+
+    public List<DisDrugTarGenePath> isEncodedByGene(Datalog datalog, List<DisDrugTarGenePath> DisDrugTarGenePathList) {
+        StringBuilder subQuerySql = new StringBuilder(Constants.IS_ENCODED_BY_GENE);
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("is_encoded_by_gene")) {
+            Relationship is_encoded_by_gene = relationships.get("is_encoded_by_gene");
+            Map<String, String> attributeMap = is_encoded_by_gene.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s ='%s'", nk, v));
+            });
+        }
+        return subQueryMapper.getGeneByTar(subQuerySql.toString(), DisDrugTarGenePathList);
+    }
+
+    public List<DisDrugTarGenePath> takesPartIn(Datalog datalog, List<DisDrugTarGenePath> DisDrugTarGenePathList) {
+        StringBuilder subQuerySql = new StringBuilder(Constants.TAKES_PART_IN);
+        Map<String, Relationship> relationships = datalog.getRelationships();
+        if (relationships.containsKey("takes_part_in")) {
+            Relationship takes_part_in = relationships.get("takes_part_in");
+            Map<String, String> attributeMap = takes_part_in.getAttributes();
+            attributeMap.forEach((k, v) -> {
+                String nk = mapper.get(k);
+                subQuerySql.append(String.format(" and %s ='%s'", nk, v));
+            });
+        }
+        return subQueryMapper.getPathByGene(subQuerySql.toString(), DisDrugTarGenePathList);
+    }
+    //biomed end
 
     public List<SwineMicrobeGeneKeggRes> isHostOf(Datalog datalog) {
         StringBuilder subQuerySql = new StringBuilder(Constants.IS_HOST_OF);

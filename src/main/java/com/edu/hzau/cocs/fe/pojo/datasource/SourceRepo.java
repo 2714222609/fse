@@ -41,7 +41,7 @@ public class SourceRepo {
         Set<Source> sourcePool = new HashSet<>();
         for (String source : sources) {
             try {
-                AbstractRdbmsDriver dirver = new MysqlDriver("jdbc:mysql://localhost:3306/" + source + "?user=root&password=111111&useUnicode=true&characterEncoding=utf8");
+                AbstractRdbmsDriver dirver = new MysqlDriver("jdbc:mysql://localhost:3306/" + source + "?user=root&password=Gxz(001205)&useUnicode=true&characterEncoding=utf8");
                 RDBMSSource rdbmsSource = new RDBMSSource(source, Constants.MYSQL_SOURCE_TYPE, rulePath, dirver);
                 sourcePool.add(rdbmsSource);
             } catch (SQLException e) {

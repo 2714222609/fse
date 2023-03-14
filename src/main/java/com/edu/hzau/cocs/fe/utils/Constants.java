@@ -12,6 +12,7 @@ public interface Constants {
     // 数据源
     String[] SWINE_SOURCE =  {"fsmm", "gene_info", "relationship_entity"};
     String[] BIO_SOURCE = {"gutmgene","kegg","relationship","gutmdisorder"};
+    String[] BIOMED_SOURCE = {"biomedentity","biomedrelation"};
     String MYSQL_SOURCE_TYPE = "MySQL";
 
     // 关系/BPMN服务
@@ -39,6 +40,27 @@ public interface Constants {
             "from relationship_entity.generates, fsmm.swine, fsmm.metabolism " +
             "where generates.swine_index = swine.swine_index " +
             "and generates.metabolism_index = metabolism.metabolism_index ";
+
+    //biomed sql
+    String CURES_OF ="select distinct raredisinfo.ORPHAN_id, raredisinfo.ORPHAN_name, druginfo.drug_id, druginfo.drug_name "+
+            "from biomedrelation.rd_drug, biomedentity.raredisinfo, biomedentity.druginfo " +
+            "where rd_drug.ORPHAN_id = raredisinfo.ORPHAN_id " +
+            "and rd_drug.drug_id = druginfo.drug_id ";
+
+    String HAS_FUNCTIONS_IN ="select distinct druginfo.drug_id, druginfo.drug_name, targetinfo.target_id, targetinfo.target_name "+
+            "from biomedrelation.drug_tar, biomedentity.druginfo, biomedentity.targetinfo " +
+            "where drug_tar.target_id = targetinfo.target_id " +
+            "and drug_tar.drug_id = druginfo.drug_id ";
+
+    String IS_ENCODED_BY_GENE ="select distinct targetinfo.target_id, targetinfo.target_name, geneinfo.gene_id, geneinfo.gene_symbol "+
+            "from biomedrelation.tar_gene, biomedentity.targetinfo, biomedentity.geneinfo " +
+            "where tar_gene.target_id = targetinfo.target_id " +
+            "and tar_gene.gene_id = geneinfo.gene_id ";
+
+    String TAKES_PART_IN ="select distinct  geneinfo.gene_id, geneinfo.gene_symbol, pathinfo.path_id, pathinfo.path_name,"+
+            "from biomedrelation.gene_path, biomedentity.geneinfo, biomedentity.pathinfo " +
+            "where gene_path.gene_id = geneinfo.gene_id " +
+            "and gene_path.path_id = pathinfo.path_id ";
 
 
 
