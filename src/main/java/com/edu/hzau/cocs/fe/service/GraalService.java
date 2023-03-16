@@ -48,13 +48,13 @@ public class GraalService {
 
     public String rewriteDatalog(String datalog) {
         try {
-//            securityUtils.logInAs("user_00");
-//            Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-//            for (Task task : taskPage.getContent()) {
-//                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-//                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-//                log.info("> 任务完成: {}", task);
-//            }
+            securityUtils.logInAs("user_00");
+            Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
+            for (Task task : taskPage.getContent()) {
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+                log.info("> 任务完成: {}", task);
+            }
             Ontology onto = createRDBMSOntology(repo.getSourcePool());
             ConjunctiveQuery query = buildQuery(datalog);
 //            log.info("> ConjunctiveQuery: {}", query);

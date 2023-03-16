@@ -7,7 +7,6 @@ package com.edu.hzau.cocs.fe.service;
 import com.edu.hzau.cocs.fe.mapper.SubQueryMapper;
 import com.edu.hzau.cocs.fe.pojo.Datalog;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
