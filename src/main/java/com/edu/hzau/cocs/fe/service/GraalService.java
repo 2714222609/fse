@@ -1,7 +1,5 @@
 package com.edu.hzau.cocs.fe.service;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.edu.hzau.cocs.fe.pojo.datasource.RDBMSSource;
 import com.edu.hzau.cocs.fe.pojo.datasource.Source;
 import com.edu.hzau.cocs.fe.pojo.datasource.SourceRepo;
@@ -10,23 +8,17 @@ import com.edu.hzau.cocs.fe.utils.Dlgpz;
 import com.edu.hzau.cocs.fe.utils.SecurityUtils;
 import fr.lirmm.graphik.graal.api.core.*;
 import fr.lirmm.graphik.graal.backward_chaining.pure.PureRewriter;
-import fr.lirmm.graphik.graal.core.DefaultUnionOfConjunctiveQueries;
 import fr.lirmm.graphik.graal.core.ruleset.DefaultOntology;
 import fr.lirmm.graphik.graal.io.dlp.DlgpParser;
-import fr.lirmm.graphik.util.stream.CloseableIterator;
 import fr.lirmm.graphik.util.stream.CloseableIteratorWithoutException;
 import lombok.extern.slf4j.Slf4j;
-import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.jsoup.helper.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.unit.DataUnit;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;

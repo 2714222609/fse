@@ -39,9 +39,6 @@ public interface Constants {
             "from relationship_entity.generates, fsmm.swine, fsmm.metabolism " +
             "where generates.swine_index = swine.swine_index " +
             "and generates.metabolism_index = metabolism.metabolism_index ";
-
-
-
-
-
+    String[] SUBQUERY_TEMPLATE_1 = {"isHostOf", "changeTheExpressionByMicrobiota", "hasGeneKeggInfo"};
+    String[] SUBQUERY_TEMPLATE_2 = {"generates", "hasHmdbInfo"};
 }

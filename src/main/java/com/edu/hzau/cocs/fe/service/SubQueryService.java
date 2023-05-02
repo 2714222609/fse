@@ -6,19 +6,13 @@ import com.edu.hzau.cocs.fe.pojo.SwineMicrobeGeneKeggRes;
 import com.edu.hzau.cocs.fe.pojo.datalog.Datalog;
 import com.edu.hzau.cocs.fe.pojo.datalog.Relationship;
 import com.edu.hzau.cocs.fe.utils.Constants;
-import com.edu.hzau.cocs.fe.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.activiti.api.runtime.shared.query.Page;
-import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.builders.TaskPayloadBuilder;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.Rserve.RserveException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +23,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class SubQueryService {
-    @Autowired
-    private SubQueryMapper subQueryMapper;
-
-    @Autowired
-    private TaskRuntime taskRuntime;
-
-    @Autowired
-    private SecurityUtils securityUtils;
-
+    private final SubQueryMapper subQueryMapper = new SubQueryMapper();
     private static final Map<String, String> mapper = new HashMap<>();
     static {
         String[] k = {"p_value_dpf_tpf_difference", "microbe_time", "group",
@@ -50,7 +36,7 @@ public class SubQueryService {
         }
     }
 
-    public List<SwineMicrobeGeneKeggRes> isHostOf(Datalog datalog) {
+    public List<SwineMicrobeGeneKeggRes> isHostOf(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws SQLException {
         StringBuilder subQuerySql = new StringBuilder(Constants.IS_HOST_OF);
         Map<String, Relationship> relationships = datalog.getRelationships();
         if (relationships.containsKey("is_host_of")) {
@@ -61,17 +47,11 @@ public class SubQueryService {
                 subQuerySql.append(String.format(" and %s = '%s'", nk, v));
             });
         }
-        securityUtils.logInAs("user_00");
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-        for (Task task : taskPage.getContent()) {
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-            taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-            log.info("> 任务完成: {}", task);
-        }
-        return subQueryMapper.getMicrobeBySwine(subQuerySql.toString());
+        swineMicrobeGeneKeggResList = subQueryMapper.getMicrobeBySwine(subQuerySql.toString(), swineMicrobeGeneKeggResList);
+        return swineMicrobeGeneKeggResList;
     }
 
-    public List<SwineMicrobeGeneKeggRes> changeTheExpressionByMicrobiota(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) {
+    public List<SwineMicrobeGeneKeggRes> changeTheExpressionByMicrobiota(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws SQLException {
         StringBuilder subQuerySql = new StringBuilder(Constants.CHANGE_THE_EXPRESSION_BY_MICROBIOTA);
         Map<String, Relationship> relationships = datalog.getRelationships();
         if (relationships.containsKey("changes_the_expression_by_microbiota")) {
@@ -82,17 +62,10 @@ public class SubQueryService {
                 subQuerySql.append(String.format(" and %s = '%s'", nk, v));
             });
         }
-        securityUtils.logInAs("user_00");
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-        for (Task task : taskPage.getContent()) {
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-            taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-            log.info("> 任务完成: {}", task);
-        }
         return subQueryMapper.getGeneByMicrobe(subQuerySql.toString(), swineMicrobeGeneKeggResList);
     }
 
-    public List<SwineMicrobeGeneKeggRes> hasGeneKeggInfo(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws REXPMismatchException, IOException, RserveException {
+    public List<SwineMicrobeGeneKeggRes> hasGeneKeggInfo(Datalog datalog, List<SwineMicrobeGeneKeggRes> swineMicrobeGeneKeggResList) throws REXPMismatchException, IOException, RserveException, SQLException {
         StringBuilder subQuerySql = new StringBuilder(Constants.HAS_GENE_KEGG_INFO);
         Map<String, Relationship> relationships = datalog.getRelationships();
         if (relationships.containsKey("has_gene_kegg_info")) {
@@ -103,18 +76,11 @@ public class SubQueryService {
                 subQuerySql.append(String.format(" and %s = '%s'", nk, v));
             });
         }
-        securityUtils.logInAs("user_00");
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-        for (Task task : taskPage.getContent()) {
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-            taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-            log.info("> 任务完成: {}", task);
-        }
         return subQueryMapper.getKeggByGene(subQuerySql.toString(), swineMicrobeGeneKeggResList);
 //        return subQueryMapper.getKeggByGeneOnline(swineMicrobeGeneKeggResList);
     }
 
-    public List<SwineMetabolismHmdbRes> generates(Datalog datalog) {
+    public List<SwineMetabolismHmdbRes> generates(Datalog datalog, List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList) throws SQLException {
         StringBuilder subQuerySql = new StringBuilder(Constants.GENERATES);
         Map<String, Relationship> relationships = datalog.getRelationships();
         if (relationships.containsKey("generates")) {
@@ -125,18 +91,11 @@ public class SubQueryService {
                 subQuerySql.append(String.format(" and %s = '%s'", nk, v));
             });
         }
-        securityUtils.logInAs("user_00");
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-        for (Task task : taskPage.getContent()) {
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-            taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-            log.info("> 任务完成: {}", task);
-        }
-        System.out.println(subQuerySql);
-        return subQueryMapper.getMetabolismBySwine(subQuerySql.toString());
+        swineMetabolismHmdbResList = subQueryMapper.getMetabolismBySwine(subQuerySql.toString(), swineMetabolismHmdbResList);
+        return swineMetabolismHmdbResList;
     }
 
-    public List<SwineMetabolismHmdbRes> hasHmdbInfo(Datalog datalog, List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList) {
+    public List<SwineMetabolismHmdbRes> hasHmdbInfo(Datalog datalog, List<SwineMetabolismHmdbRes> swineMetabolismHmdbResList) throws SQLException {
         StringBuilder subQuerySql = new StringBuilder(Constants.HAS_HMDB_INFO);
         Map<String, Relationship> relationships = datalog.getRelationships();
         if (relationships.containsKey("has_hmdb_info")) {
@@ -147,14 +106,6 @@ public class SubQueryService {
                 subQuerySql.append(String.format(" and %s = '%s'", nk, v));
             });
         }
-        securityUtils.logInAs("user_00");
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 1));
-        for (Task task : taskPage.getContent()) {
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-            taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-            log.info("> 任务完成: {}", task);
-        }
-        System.out.println(subQuerySql);
 //        return subQueryMapper.getHmdbByMetabolismOnline(subQuerySql.toString(), swineMetabolismHmdbResList);
         return subQueryMapper.getHmdbByMetabolism(subQuerySql.toString(), swineMetabolismHmdbResList);
     }
