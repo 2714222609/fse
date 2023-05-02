@@ -15,5 +15,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class Datalog {
     private List<String> header;
-    private Map<String, Relationship> relationships;
+    private Map<String, Relationship> body;
 }

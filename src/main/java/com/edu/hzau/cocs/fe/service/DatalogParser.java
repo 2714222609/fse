@@ -49,7 +49,7 @@ public class DatalogParser {
             rela.setAttributes(attrMap);
             relationshipMap.put(rela.getRelationship(), rela);
         }
-        datalog.setRelationships(relationshipMap);
+        datalog.setBody(relationshipMap);
         return datalog;
     }
 }

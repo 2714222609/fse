@@ -1,0 +1,10 @@
+{
+  "rules":{
+    "p_value_dpf_tpf_difference": "fsmm.microbe.microbe_dpf_tpf_difference",
+    "microbe_time": "fsmm.microbe.days",
+    "group": "fsmm.microbe.col",
+    "p_age_difference": "fsmm.microbe.microbe_age_difference",
+    "metabolome_difference": "fsmm.metabolism.metabolome_difference",
+    "metabolism_time": "metabolism_time"
+  }
+}
